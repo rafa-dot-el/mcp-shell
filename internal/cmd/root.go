@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+// Package cmd implements the CLI commands for MCP Shell.
 package cmd
 
 import (
@@ -46,8 +47,9 @@ Author: Rafael <<>>
 Source: https://github.com/rafa-dot-el/mcp-shell`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Hello World from MCP Shell!")
+		fmt.Println("MCP Shell Server for serving shell AI models")
 		fmt.Printf("Version: %s\n", version)
+		fmt.Printf("Use 'mcp-shell help' for more information\n")
 
 		if viper.GetBool("verbose") {
 			fmt.Println("Verbose mode enabled")
