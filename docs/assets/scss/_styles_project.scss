@@ -1,0 +1,192 @@
+/*
+Add styles for the project here.
+*/
+
+// Hero section enhancements
+.td-cover {
+  background: $hero-background;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+
+  .display-1, .display-2, .display-3, .display-4 {
+    text-shadow: $hero-text-shadow;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .lead {
+    text-shadow: $hero-text-shadow;
+    font-size: 1.25rem;
+    font-weight: 400;
+    opacity: 0.95;
+  }
+
+  .btn {
+    box-shadow: $box-shadow-lg;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.025em;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+  }
+}
+
+// Section styling
+.td-block {
+  padding: 5rem 0;
+
+  h2 {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 2rem;
+  }
+
+  .lead {
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.7;
+  }
+}
+
+// Feature cards
+.feature-card {
+  text-align: center;
+  padding: 2rem 1rem;
+
+  .fa-4x {
+    color: $primary;
+    margin-bottom: 1.5rem;
+  }
+
+  h4 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+}
+
+// Code blocks
+pre {
+  background: $dark;
+  border-radius: $border-radius-lg;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  box-shadow: $box-shadow;
+
+  code {
+    color: #e2e8f0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+}
+
+// Installation section
+.installation-method {
+  background: $light;
+  border-radius: $border-radius-lg;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border-left: 4px solid $primary;
+
+  h4 {
+    color: $primary;
+    font-weight: 600;
+    margin-bottom: 1rem;
+
+    i {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// Button enhancements
+.btn {
+  border-radius: $border-radius;
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
+
+  &.btn-lg {
+    padding: 0.75rem 2rem;
+    font-size: 1.125rem;
+  }
+}
+
+// Card enhancements
+.card {
+  border-radius: $border-radius-lg;
+  box-shadow: $box-shadow;
+  border: none;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $box-shadow-lg;
+  }
+}
+
+// Navigation enhancements
+.td-navbar {
+  box-shadow: $box-shadow-sm;
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+}
+
+// Sidebar enhancements
+.td-sidebar {
+  .td-sidebar-nav {
+    .td-sidebar-link {
+      font-weight: 500;
+      transition: all 0.15s ease-in-out;
+
+      &:hover {
+        color: $primary;
+        text-decoration: none;
+      }
+
+      &.active {
+        color: $primary;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+// Content enhancements
+.td-content {
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    line-height: 1.7;
+  }
+
+  .highlight {
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    box-shadow: $box-shadow;
+  }
+}
+
+// Footer enhancements
+.td-footer {
+  background: $dark;
+  color: rgba(255, 255, 255, 0.8);
+
+  a {
+    color: rgba(255, 255, 255, 0.9);
+    transition: color 0.15s ease-in-out;
+
+    &:hover {
+      color: white;
+      text-decoration: none;
+    }
+  }
+}

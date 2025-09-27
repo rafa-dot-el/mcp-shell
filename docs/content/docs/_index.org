@@ -1,0 +1,20 @@
+#+TITLE: Documentation
+#+DESCRIPTION: Documentation for MCP Shell
+#+WEIGHT: 20
+
+* MCP Shell Documentation
+
+Documentation for MCP Shell.
+
+** Getting Started
+
+- [[/docs/installation/][Installation Guide]] - Install MCP Shell via various methods
+- [[/docs/quickstart/][Quick Start]] - Get up and running in minutes
+
+** Support
+
+If you need help with MCP Shell:
+
+- Use =mcp-shell --help= for command-line help
+- Search [[https://github.com/rafa-dot-el/mcp-shell/issues][GitHub Issues]]
+- Report bugs on [[https://github.com/rafa-dot-el/mcp-shell/issues][GitHub]]

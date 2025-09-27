@@ -1,0 +1,142 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+coverage.out
+coverage.html
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+
+# Build artifacts
+build/
+out/
+target/
+
+# Object files
+*.o
+*.a
+
+# Package archives
+*.tar.gz
+*.zip
+*.deb
+*.rpm
+
+# Test & coverage artifacts
+coverage/
+htmlcov/
+.coverage
+junit.xml
+test-results.xml
+*.lcov
+*.gcov
+.pytest_cache/
+
+# Profiling data
+*.prof
+profile.out
+*.pprof
+
+# Documentation artifacts
+
+docs/public/
+docs/resources/
+
+doc/build/
+
+# Temporary & cache files
+.cache/
+tmp/
+temp/
+logs/
+.logs/
+*.tmp
+*.temp
+*.log
+*.pid
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+#*#
+tags
+TAGS
+.tags
+
+# OS-specific files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Security-sensitive files
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+.env.local
+.env.production
+
+# Infrastructure artifacts
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+terraform.tfvars
+
+# Nix
+result
+result-*
+
+# Node.js (if used for tooling)
+node_modules/
+.npm/
+yarn-error.log
+docs/node_modules/
+docs/package-lock.json
+
+# Python (if used for tooling)
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Go module backups
+go.sum.backup
+
+# GoReleaser
+dist/
+
+# Air (live reloading) temp files
+tmp/
+
+# Delve debugger
+__debug_bin
+
+# Pre-commit
+.secrets.baseline
+
+# Note: .envrc is NOT ignored - it should be committed for consistent direnv experience

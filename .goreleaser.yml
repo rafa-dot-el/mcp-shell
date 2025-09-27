@@ -1,0 +1,97 @@
+version: 2
+
+project_name: mcp-shell
+
+before:
+  hooks:
+    # Clean up before building
+    - go mod tidy
+    - go generate ./...
+
+builds:
+  - id: mcp-shell
+    main: ./cmd/mcp-shell
+    binary: mcp-shell
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+      - freebsd
+    goarch:
+      - amd64
+      - arm64
+      - 386
+      - arm
+    goarm:
+      - 6
+      - 7
+    ignore:
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+      - goos: freebsd
+        goarch: arm
+      - goos: freebsd
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{ .Version }}- -X main.commit={{ .Commit }}- -X main.date={{ .Date }}- -X main.builtBy=goreleaser
+
+archives:
+  - id: mcp-shell
+    builds: [mcp-shell]
+    name_template: >-
+      mcp-shell_{{- .Version -}}_{{- .Os -}}_{{- .Arch -}}{{- if .Arm -}}v{{- .Arm -}}{{- end -}}format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^ci:'
+      - '^chore:'
+      - merge conflict
+      - Merge pull request
+
+release:
+  github:
+    owner: rafa-dot-el
+    name: mcp-shell
+  name_template: "{{.ProjectName}} v{{.Version}}"
+  prerelease: auto
+
+
+
+
+dockers:
+  - image_templates:
+      - "rafa-dot-el/mcp-shell:latest"
+      - "rafa-dot-el/mcp-shell:v{{ .Version }}"
+      - "rafa-dot-el/mcp-shell:{{ .Major }}"
+      - "rafa-dot-el/mcp-shell:{{ .Major }}.{{ .Minor }}"
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - --label=org.opencontainers.image.title={{ .ProjectName }}- --label=org.opencontainers.image.description=MCP Shell Server for serving shell AI models
+      - --label=org.opencontainers.image.url=https://github.com/rafa-dot-el/mcp-shell
+      - --label=org.opencontainers.image.source=https://github.com/rafa-dot-el/mcp-shell
+      - --label=org.opencontainers.image.version={{ .Version }}- --label=org.opencontainers.image.created={{ .Date }}- --label=org.opencontainers.image.revision={{ .FullCommit }}- --label=org.opencontainers.image.licenses=GPL-3.0
+      - --platform=linux/amd64
+
+announce:
+  skip: true

@@ -1,0 +1,285 @@
+version: '3'
+
+vars:
+  VERSION_FILE: VERSION
+  CURRENT_VERSION:
+    sh: cat {{.VERSION_FILE}} || echo "0.1.0"
+  BINARY_NAME: "mcp-shell"
+  GO_MODULE: "github.com/rafa-dot-el/mcp-shell"
+
+tasks:
+  default:
+    desc: List all available tasks
+    cmd: task --list
+
+  # Build Tasks
+  build:
+    desc: Build the main binary
+    cmd: |
+      go build -ldflags "-X main.version={{.CURRENT_VERSION}}" -o bin/{{.BINARY_NAME}} ./cmd/{{.BINARY_NAME}}
+    generates:
+      - bin/{{.BINARY_NAME}}
+
+  build-all:
+    desc: Build all components and artifacts
+    deps: [build]
+    cmd: |
+      task docs-build
+      
+      echo "[+] All components built successfully"
+
+  # Test Tasks
+  test:
+    desc: Run all tests (unit + integration + e2e)
+    deps: [test-unit, test-integration, test-e2e]
+
+  test-unit:
+    desc: Run unit tests with coverage
+    cmd: |
+      go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+      go tool cover -html=coverage.out -o coverage.html
+      echo "[+] Unit tests completed with coverage report"
+
+  test-integration:
+    desc: Run integration tests
+    cmd: |
+      go test -v -tags=integration ./...
+      echo "[+] Integration tests completed"
+
+  test-e2e:
+    desc: Run end-to-end tests
+    cmd: |
+      go test -v -tags=e2e ./...
+      echo "[+] End-to-end tests completed"
+
+  # Quality & Security Tasks
+  lint:
+    desc: Run code linting and formatting checks
+    cmd: |
+      go fmt ./...
+      go vet ./...
+      golangci-lint run
+      echo "[+] Linting completed"
+
+  format:
+    desc: Format code
+    cmd: |
+      go fmt ./...
+      echo "[+] Code formatted"
+
+  vuln:
+    desc: Run vulnerability scanning
+    cmd: |
+      govulncheck ./...
+      trivy fs .
+      echo "[+] Vulnerability scan completed"
+
+  security:
+    desc: Run security analysis
+    cmd: |
+      gosec ./...
+      echo "[+] Security analysis completed"
+
+  lint-taskfile:
+    desc: Validate Taskfile.yml with yamlint for YAML compliance
+    cmd: |
+      yamlint Taskfile.yml
+      echo "[+] Taskfile.yml validation completed"
+
+  # Documentation Tasks
+
+  docs:
+    desc: Serve documentation locally for testing/viewing
+    dir: docs
+    cmd: hugo serve --baseURL "http://localhost:1313/"
+
+  docs-build:
+    desc: Generate static HTML from org files
+    dir: docs
+    cmd: |
+      hugo --minify
+      echo "[+] Documentation built successfully"
+
+  # Man page tasks
+  
+  man-generate:
+    desc: Generate man pages (placeholder - man pages not enabled)
+    cmd: echo "[*] Man page generation not enabled in this project"
+
+  man-install:
+    desc: Install man pages (placeholder - man pages not enabled)
+    cmd: echo "[*] Man page generation not enabled in this project"
+
+  man-clean:
+    desc: Clean man pages (placeholder - man pages not enabled)
+    cmd: echo "[*] Man page generation not enabled in this project"
+  
+
+  # Version Management Tasks
+  version:
+    desc: Display current version
+    cmd: echo "{{.CURRENT_VERSION}}"
+
+  version-bump-patch:
+    desc: Bump patch version (bug fixes)
+    cmd: |
+      CURRENT="{{.CURRENT_VERSION}}"
+      IFS='.' read -r major minor patch <<< "$CURRENT"
+      NEW_VERSION="$major.$minor.$((patch + 1))"
+      echo $NEW_VERSION > {{.VERSION_FILE}}
+      echo "[+] Version bumped to $NEW_VERSION"
+
+  version-bump-minor:
+    desc: Bump minor version (new features)
+    cmd: |
+      CURRENT="{{.CURRENT_VERSION}}"
+      IFS='.' read -r major minor patch <<< "$CURRENT"
+      NEW_VERSION="$major.$((minor + 1)).0"
+      echo $NEW_VERSION > {{.VERSION_FILE}}
+      echo "[+] Version bumped to $NEW_VERSION"
+
+  version-bump-major:
+    desc: Bump major version (breaking changes)
+    cmd: |
+      CURRENT="{{.CURRENT_VERSION}}"
+      IFS='.' read -r major minor patch <<< "$CURRENT"
+      NEW_VERSION="$((major + 1)).0.0"
+      echo $NEW_VERSION > {{.VERSION_FILE}}
+      echo "[+] Version bumped to $NEW_VERSION"
+
+  version-tag:
+    desc: Create git tag with current version
+    cmd: |
+      git tag -a "v{{.CURRENT_VERSION}}" -m "Release v{{.CURRENT_VERSION}}"
+      echo "[+] Tagged v{{.CURRENT_VERSION}}"
+
+  version-release:
+    desc: Tag and trigger release process
+    deps: [version-tag]
+    cmd: |
+      git push origin "v{{.CURRENT_VERSION}}"
+      echo "[+] Release v{{.CURRENT_VERSION}} triggered"
+
+  # Meta Tasks
+  all:
+    desc: Complete lifecycle - build, test, lint, vuln scan, docs test, validate all components
+    cmd: |
+      echo "[*] Running complete development lifecycle..."
+      task build-all
+      task test
+      task lint
+      task vuln
+      task security
+      task docs-build
+      task lint-taskfile
+      echo "[+] Complete lifecycle passed successfully"
+
+  clean:
+    desc: Clean all build artifacts and temporary files
+    cmd: |
+      echo "[*] Cleaning all build artifacts and temporary files..."
+
+      # Build artifacts
+      rm -rf bin/ dist/ build/ out/ target/
+      find . -name "*.o" -o -name "*.so" -o -name "*.dylib" -o -name "*.dll" -o -name "*.a" | xargs -r rm -f
+
+      # Test & coverage artifacts
+      rm -rf coverage/ htmlcov/ .coverage junit.xml test-results.xml coverage.out coverage.html
+      find . -name "*.lcov" -o -name "*.gcov" | xargs -r rm -f
+      find . -name "*.prof" -o -name "profile.out" -o -name "*.pprof" | xargs -r rm -f
+
+      # Documentation artifacts
+      
+      rm -rf docs/public/ docs/resources/
+      
+      rm -rf doc/build/
+
+      # Man page artifacts
+      
+
+      # Go-specific artifacts
+      rm -f go.sum.backup
+
+      # Temporary & cache files
+      rm -rf .cache/ tmp/ temp/ logs/ .logs/
+      find . -name "*.tmp" -o -name "*.temp" -o -name "*.log" -o -name "*.pid" | xargs -r rm -f
+
+      # Infrastructure artifacts
+      rm -rf .terraform/ result result-*
+      find . -name "*.tfstate.backup" -o -name "*.tfplan" -o -name "tfplan" | xargs -r rm -f
+
+      # Editor files
+      find . -name "*~" -o -name "*.swp" -o -name "*.swo" -o -name "#*#" -o -name "tags" -o -name "TAGS" -o -name ".tags" | xargs -r rm -f
+
+      echo "[+] All build artifacts and temporary files cleaned"
+
+  deps:
+    desc: Install/update dependencies
+    cmd: |
+      go mod download
+      go mod tidy
+      echo "[+] Dependencies updated"
+
+  # Go-specific tasks
+  go-generate:
+    desc: Run go generate
+    cmd: |
+      go generate ./...
+      echo "[+] Code generation completed"
+
+  go-mod-update:
+    desc: Update Go module dependencies
+    cmd: |
+      go get -u ./...
+      go mod tidy
+      echo "[+] Go modules updated"
+
+  # Development helpers
+  dev-setup:
+    desc: Set up development environment
+    cmd: |
+      echo "[*] Setting up development environment..."
+      task deps
+      task build
+      task test-unit
+      echo "[+] Development environment ready"
+
+  dev-check:
+    desc: Quick development check (lint + unit tests)
+    cmd: |
+      task lint
+      task test-unit
+
+  # Pre-commit tasks
+  pre-commit-install:
+    desc: Install pre-commit hooks
+    cmd: |
+      if command -v pre-commit >/dev/null 2>&1; then
+        pre-commit install
+        pre-commit install --hook-type commit-msg
+        echo "[+] Pre-commit hooks installed"
+      else
+        echo "[-] pre-commit not found. Install with: pip install pre-commit"
+        exit 1
+      fi
+
+  pre-commit-run:
+    desc: Run pre-commit hooks on all files
+    cmd: |
+      if command -v pre-commit >/dev/null 2>&1; then
+        pre-commit run --all-files
+      else
+        echo "[-] pre-commit not found. Install with: pip install pre-commit"
+        exit 1
+      fi
+
+  pre-commit-update:
+    desc: Update pre-commit hooks to latest versions
+    cmd: |
+      if command -v pre-commit >/dev/null 2>&1; then
+        pre-commit autoupdate
+        echo "[+] Pre-commit hooks updated"
+      else
+        echo "[-] pre-commit not found. Install with: pip install pre-commit"
+        exit 1
+      fi

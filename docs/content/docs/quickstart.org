@@ -1,0 +1,84 @@
+#+TITLE: Quick Start
+#+DESCRIPTION: Get up and running with MCP Shell in minutes
+#+WEIGHT: 20
+
+* Quick Start
+
+Get started with MCP Shell in just a few minutes.
+
+** Installation
+
+First, install MCP Shell using your preferred method from the [[/docs/installation/][Installation Guide]].
+
+** Basic Usage
+
+Run MCP Shell to see the Hello World message:
+
+#+BEGIN_SRC bash
+mcp-shell
+#+END_SRC
+
+Output:
+#+BEGIN_EXAMPLE
+Hello World from MCP Shell!
+Version: 0.1.0
+#+END_EXAMPLE
+
+** Command Line Options
+
+View all available options:
+
+#+BEGIN_SRC bash
+mcp-shell --help
+#+END_SRC
+
+Enable verbose output:
+
+#+BEGIN_SRC bash
+mcp-shell --verbose
+#+END_SRC
+
+Enable debug output:
+
+#+BEGIN_SRC bash
+mcp-shell --debug
+#+END_SRC
+
+Check version information:
+
+#+BEGIN_SRC bash
+mcp-shell version
+#+END_SRC
+
+** Configuration
+
+MCP Shell supports hierarchical configuration:
+
+1. Command line flags (highest priority)
+2. Environment variables
+3. Configuration files
+4. Default values (lowest priority)
+
+*** Environment Variables
+
+Set environment variables with the =MCP_SHELL_= prefix:
+
+#+BEGIN_SRC bash
+export MCP_SHELL_VERBOSE=true
+export MCP_SHELL_DEBUG=true
+mcp-shell
+#+END_SRC
+
+*** Configuration File
+
+Create a configuration file at =~/.config/mcp-shell/config.yaml=:
+
+#+BEGIN_SRC yaml
+verbose: true
+debug: false
+#+END_SRC
+
+** Next Steps
+
+- Explore the [[/docs/][full documentation]]
+- Report issues on [[https://github.com/rafa-dot-el/mcp-shell/issues][GitHub]]

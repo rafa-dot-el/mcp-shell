@@ -1,0 +1,128 @@
+
+baseURL = "https://rafa-dot-el.github.io/mcp-shell"
+languageCode = "en-us"
+title = "MCP Shell"
+description = "MCP Shell Server for serving shell AI models"
+
+# Content directory
+contentDir = "content/en"
+defaultContentLanguage = "en"
+
+# Enable Org mode content
+disableKinds = []
+
+# Language settings
+[languages]
+[languages.en]
+title = "MCP Shell"
+description = "MCP Shell Server for serving shell AI models"
+languageName = "English"
+contentDir = "content/en"
+time_format_default = "2006-01-02"
+time_format_blog = "2006-01-02"
+
+
+
+# Module configuration
+[module]
+  [[module.imports]]
+    path = "github.com/google/docsy"
+    disable = false
+
+# Site parameters
+[params]
+  description = "MCP Shell Server for serving shell AI models"
+  author = "Rafael"
+
+  # Docsy theme settings
+  github_repo = "https://github.com/rafa-dot-el/mcp-shell"
+  github_branch = "main"
+
+  # User interface configuration
+  [params.ui]
+    sidebar_menu_compact = false
+    breadcrumb_disable = false
+    sidebar_search_disable = false
+    navbar_logo = true
+    footer_about_enable = true
+
+  [params.ui.feedback]
+    enable = true
+    yes = 'Glad to hear it! Please <a href="https://github.com/rafa-dot-el/mcp-shell/issues/new">tell us how we can improve</a>.'
+    no = 'Sorry to hear that. Please <a href="https://github.com/rafa-dot-el/mcp-shell/issues/new">tell us how we can improve</a>.'
+
+  # Links to user social networks
+  [params.links]
+    [[params.links.user]]
+      name = "GitHub"
+      url = "https://github.com/rafa-dot-el/mcp-shell"
+      icon = "fab fa-github"
+      desc = "Development takes place here!"
+
+# Markup configuration
+[markup]
+  # Goldmark for Markdown (fallback)
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+  # Org mode configuration
+  [markup.org]
+    # Enable Org mode features
+    enableCode = true
+    enableHighlight = true
+    enableTables = true
+    enableFootnotes = true
+    enableInlineShortcodes = true
+
+  # Syntax highlighting
+  [markup.highlight]
+    style = "github"
+    lineNos = true
+    lineNumbersInTable = true
+    tabWidth = 2
+    guessSyntax = true
+
+# Menu configuration
+[menu]
+  [[menu.main]]
+    name = "Docs"
+    url = "/docs/"
+    weight = 10
+  [[menu.main]]
+    name = "GitHub"
+    url = "https://github.com/rafa-dot-el/mcp-shell"
+    weight = 20
+
+# Output formats
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  page = ["HTML"]
+  section = ["HTML", "RSS"]
+
+# Sitemap configuration
+[sitemap]
+  filename = "sitemap.xml"
+  priority = 0.5
+  changefreq = "monthly"
+
+
+# Security configuration
+[security]
+  [security.exec]
+    allow = ["^(dart-)?sass(-embedded)?$", "^go$", "^npx$", "^postcss$", "^pandoc$", "^emacs$"]
+    osEnv = ["(?i)^((HTTPS?|NO)_PROXY|PATH(EXT)?|APPDATA|TE?MP|TERM|GO\\w+|(XDG_CONFIG_)?HOME|USERPROFILE|SSH_AUTH_SOCK|DISPLAY|LANG|SYSTEMDRIVE)$"]
+
+  [security.funcs]
+    getenv = ["^HUGO_", "^CI$"]
+
+  [security.http]
+    methods = ["(?i)GET|POST"]
+    urls = [".*"]
+
+# File handling
+[frontmatter]
+  date = ["date", "publishDate", "pubdate", "published", "lastmod", "modified"]
+  expiryDate = ["expirydate", "unpublishdate"]
+  lastmod = ["lastmod", "modified", "updated"]
+  publishDate = ["publishdate", "pubdate", "published", "date"]

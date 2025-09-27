@@ -1,0 +1,50 @@
+#+TITLE: Installation
+#+DESCRIPTION: Install MCP Shell via various methods
+#+WEIGHT: 10
+
+* Installation
+
+Multiple ways to install MCP Shell are available.
+
+** Nix (Recommended)
+
+#+BEGIN_SRC bash
+# Run directly
+nix run github:rafa-dot-el/mcp-shell
+
+# Install to profile
+nix profile install github:rafa-dot-el/mcp-shell
+#+END_SRC
+
+** GitHub Releases
+
+Download pre-built binaries from [[https://github.com/rafa-dot-el/mcp-shell/releases][GitHub Releases]]:
+
+#+BEGIN_SRC bash
+# Linux AMD64
+curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/download/mcp-shell_linux_amd64.tar.gz | tar xz
+
+# macOS AMD64
+curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/download/mcp-shell_darwin_amd64.tar.gz | tar xz
+
+# macOS ARM64
+curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/download/mcp-shell_darwin_arm64.tar.gz | tar xz
+#+END_SRC
+
+** Container
+
+#+BEGIN_SRC bash
+# Run with Podman
+podman run --rm ghcr.io/rafa-dot-el/mcp-shell:latest
+
+# Run with Docker
+docker run --rm ghcr.io/rafa-dot-el/mcp-shell:latest
+#+END_SRC
+
+** Build from Source
+
+#+BEGIN_SRC bash
+git clone https://github.com/rafa-dot-el/mcp-shell.git
+cd mcp-shell
+go build -o mcp-shell ./cmd/mcp-shell
+#+END_SRC

@@ -1,0 +1,214 @@
++++
+title = "MCP Shell"
++++
+
+<!-- Hero section -->
+{{<blocks/cover title="MCP Shell" subtitle="MCP Shell Server for serving shell AI models on any platform." image_anchor="center" color="dark" height="min">}}
+<div class="mt-5">
+  <div class="mx-auto">
+    <a class="btn btn-lg btn-primary mx-1 mb-3 mb-sm-0 px-3 px-md-4 py-2" href="/docs/installation/">
+      Get Started
+      <i class="fas fa-arrow-alt-circle-right ml-1"></i>
+    </a>
+    <a class="btn btn-lg btn-secondary mx-1 mb-3 mb-sm-0 px-3 px-md-4 py-2" href="https://github.com/rafa-dot-el/mcp-shell">
+      GitHub
+      <i class="fab fa-github ml-1"></i>
+    </a>
+    <a class="btn btn-lg btn-info mx-1 mb-3 mb-sm-0 px-3 px-md-4 py-2" href="/docs/">
+      Documentation
+      <i class="fas fa-book ml-1"></i>
+    </a>
+  </div>
+  <div class="mt-2">
+    <a class="btn btn-link text-light" href="#overview">
+      <i class="fa-solid fa-circle-chevron-down" style="font-size: 350%"></i>
+    </a>
+  </div>
+</div>
+{{</blocks/cover>}}
+
+<!-- Overview section -->
+{{% blocks/section color="white" %}}
+<div class="container" id="overview">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <h2 class="text-center">What is MCP Shell?</h2>
+      <p class="text-center lead">
+        MCP Shell is a <strong>cross-platform CLI tool</strong> that provides a Model Context Protocol (MCP) server for serving shell AI models.
+        Built with Go, it offers <strong>secure</strong>, <strong>configurable</strong>, and <strong>portable</strong> shell command execution
+        for AI systems that need to interact with system shells safely.
+      </p>
+      <p class="text-center">
+        <a class="btn btn-secondary" href="/docs/">
+          Learn more about MCP Shell
+          <i class="fas fa-arrow-alt-circle-right ml-1"></i>
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+{{% /blocks/section %}}
+
+<!-- Features section -->
+{{% blocks/section color="primary" %}}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="text-center">Key Features</h2>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-lg-4 mb-5 mb-lg-0">
+      <div class="feature-card">
+        <div class="mb-4">
+          <i class="fas fa-shield-alt fa-4x"></i>
+        </div>
+        <h4 class="h3">Secure by Design</h4>
+        <p class="mb-0">Built with security best practices, vulnerability scanning, and safe command execution controls.</p>
+      </div>
+    </div>
+    <div class="col-lg-4 mb-5 mb-lg-0">
+      <div class="feature-card">
+        <div class="mb-4">
+          <i class="fas fa-cogs fa-4x"></i>
+        </div>
+        <h4 class="h3">Highly Configurable</h4>
+        <p class="mb-0">Flexible configuration through CLI flags, environment variables, and configuration files.</p>
+      </div>
+    </div>
+    <div class="col-lg-4 mb-5 mb-lg-0">
+      <div class="feature-card">
+        <div class="mb-4">
+          <i class="fas fa-globe fa-4x"></i>
+        </div>
+        <h4 class="h3">Cross-Platform</h4>
+        <p class="mb-0">Works seamlessly on Linux, macOS, Windows, and FreeBSD across multiple architectures.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{{% /blocks/section %}}
+
+<!-- Installation section -->
+{{% blocks/section color="white" %}}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="text-center">Quick Installation</h2>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-lg-6 mb-5 mb-lg-0">
+      <div class="installation-method">
+        <h4><i class="fas fa-snowflake mr-2"></i>Nix (Recommended)</h4>
+        <p class="text-muted mb-3">Reproducible builds and dependency management</p>
+        <pre><code># Run directly
+nix run github:rafa-dot-el/mcp-shell
+
+# Install to profile
+nix profile install github:rafa-dot-el/mcp-shell</code></pre>
+      </div>
+    </div>
+    <div class="col-lg-6 mb-5 mb-lg-0">
+      <div class="installation-method">
+        <h4><i class="fas fa-download mr-2"></i>Binary Download</h4>
+        <p class="text-muted mb-3">Pre-built binaries for all platforms</p>
+        <pre><code># Linux
+curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/download/mcp-shell_linux_amd64.tar.gz | tar xz
+
+# macOS
+curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/download/mcp-shell_darwin_amd64.tar.gz | tar xz</code></pre>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-12 text-center">
+      <a class="btn btn-primary" href="/docs/installation/">
+        View All Installation Methods
+        <i class="fas fa-arrow-alt-circle-right ml-1"></i>
+      </a>
+    </div>
+  </div>
+</div>
+{{% /blocks/section %}}
+
+<!-- Use Cases section -->
+{{% blocks/section color="dark" %}}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="text-center">Use Cases</h2>
+    </div>
+  </div>
+  <div class="row mt-5">
+    <div class="col-lg-4 mb-5 mb-lg-0 text-center">
+      <div class="mb-4">
+        <i class="fas fa-robot fa-4x"></i>
+      </div>
+      <h4 class="h3">AI System Integration</h4>
+      <p class="mb-0">Provide secure shell access for AI systems that need to execute system commands.</p>
+    </div>
+    <div class="col-lg-4 mb-5 mb-lg-0 text-center">
+      <div class="mb-4">
+        <i class="fas fa-terminal fa-4x"></i>
+      </div>
+      <h4 class="h3">Development Automation</h4>
+      <p class="mb-0">Automate development workflows and build processes through MCP protocol.</p>
+    </div>
+    <div class="col-lg-4 mb-5 mb-lg-0 text-center">
+      <div class="mb-4">
+        <i class="fas fa-server fa-4x"></i>
+      </div>
+      <h4 class="h3">System Administration</h4>
+      <p class="mb-0">Safe remote system administration through controlled shell command execution.</p>
+    </div>
+  </div>
+</div>
+{{% /blocks/section %}}
+
+<!-- Community section -->
+{{% blocks/section color="white" %}}
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+      <h2>Join the Community</h2>
+      <p class="lead">
+        MCP Shell is an open source project. We'd love your help to make it better!
+      </p>
+      <p>
+        <a class="btn btn-lg btn-primary mx-1" href="https://github.com/rafa-dot-el/mcp-shell">
+          <i class="fab fa-github"></i> GitHub
+        </a>
+        <a class="btn btn-lg btn-secondary mx-1" href="https://github.com/rafa-dot-el/mcp-shell/issues">
+          <i class="fas fa-bug"></i> Issues
+        </a>
+        <a class="btn btn-lg btn-info mx-1" href="https://github.com/rafa-dot-el/mcp-shell/discussions">
+          <i class="fas fa-comments"></i> Discussions
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+{{% /blocks/section %}}
+
+<!-- License section -->
+{{% blocks/section color="primary" %}}
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 mx-auto text-center">
+      <h2>Open Source</h2>
+      <p class="lead">
+        MCP Shell is licensed under the <strong>GNU General Public License v3.0</strong>
+      </p>
+      <p>
+        Free software that respects your freedom and ensures all users have the rights to run, copy, distribute, study, change and improve the software.
+      </p>
+      <p>
+        <a class="btn btn-secondary" href="https://www.gnu.org/licenses/gpl-3.0.html">
+          <i class="fas fa-balance-scale"></i> View License
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+{{% /blocks/section %}}
