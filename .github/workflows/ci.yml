@@ -43,7 +43,7 @@ jobs:
           go build -ldflags "-X main.version=ci-build" -o bin/mcp-shell ./cmd/mcp-shell
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'binary-${{ github.sha }}'
           path: bin/mcp-shell
@@ -107,7 +107,7 @@ jobs:
           go-version: '${{ env.GO_VERSION }}'
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v4
         with:
           version: latest
           args: --timeout=5m
@@ -137,9 +137,14 @@ jobs:
           go-version: '${{ env.GO_VERSION }}'
 
       - name: Run Gosec Security Scanner
-        uses: securecodewarrior/github-action-gosec@master
+        uses: securecodewarrior/github-action-add-sarif@v1
         with:
-          args: '-severity medium'
+          sarif-file: 'gosec.sarif'
+
+      - name: Install and run gosec
+        run: |
+          go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
+          gosec -fmt sarif -out gosec.sarif -severity medium ./...
 
       - name: Run govulncheck
         run: |
@@ -201,7 +206,7 @@ jobs:
           ls -la public/
 
       - name: Upload documentation artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: 'docs-${{ github.sha }}'
           path: docs/public/
