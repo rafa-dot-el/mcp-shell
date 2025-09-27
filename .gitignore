@@ -115,7 +115,7 @@ node_modules/
 .npm/
 yarn-error.log
 docs/node_modules/
-docs/package-lock.json
+# docs/package-lock.json - Allow this for Hugo Docsy theme dependencies
 
 # Python (if used for tooling)
 __pycache__/
