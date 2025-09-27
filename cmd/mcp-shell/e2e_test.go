@@ -1,3 +1,5 @@
+//go:build e2e
+
 /*
 MCP Shell Server for serving shell AI models
 Copyright (C) 2025 Rafael
@@ -15,8 +17,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
-//go:build e2e
 
 package main
 

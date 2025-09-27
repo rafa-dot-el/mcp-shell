@@ -138,7 +138,7 @@ jobs:
 
       - name: Install and run gosec
         run: |
-          go install github.com/securecodewarrior/gosec@latest
+          go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
           gosec -fmt sarif -out gosec.sarif -severity medium ./...
 
       - name: Run govulncheck

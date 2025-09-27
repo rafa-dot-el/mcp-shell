@@ -1,4 +1,3 @@
-
 /*
 MCP Shell Server for serving shell AI models
 Copyright (C) 2025 Rafael
