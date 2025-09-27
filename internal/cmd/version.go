@@ -33,7 +33,7 @@ var versionCmd = &cobra.Command{
 
 This includes the version number, Go version used to build,
 and other build-time information.`,
-	Run: func(_ *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		fmt.Printf("MCP Shell version %s\n", version)
 		fmt.Printf("Built with %s %s/%s\n", runtime.Version(), runtime.GOOS, runtime.GOARCH)
 		fmt.Printf("Licensed under GPL-3.0\n")

@@ -46,7 +46,7 @@ https://www.gnu.org/licenses/gpl-3.0.html
 Author: Rafael <<>>
 Source: https://github.com/rafa-dot-el/mcp-shell`,
 
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(_ *cobra.Command, _ []string) {
 		fmt.Println("MCP Shell Server for serving shell AI models")
 		fmt.Printf("Version: %s\n", version)
 		fmt.Printf("Use 'mcp-shell help' for more information\n")
