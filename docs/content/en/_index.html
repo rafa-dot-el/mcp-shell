@@ -2,48 +2,97 @@
 title = "MCP Shell"
 +++
 
-<!-- Hero section -->
-{{<blocks/cover title="MCP Shell" subtitle="MCP Shell Server for serving shell AI models on any platform." image_anchor="center" color="dark" height="min">}}
+<!-- Enhanced Hero section with tech aesthetics -->
+{{<blocks/cover title="MCP Shell" subtitle="Secure shell execution server for AI systems. Cross-platform, configurable, and built for modern development workflows." image_anchor="center" color="dark" height="full">}}
 <div class="mt-5">
   <div class="mx-auto">
-    <a class="btn btn-lg btn-primary mx-1 mb-3 mb-sm-0 px-3 px-md-4 py-2" href="/docs/installation/">
+    <a class="btn btn-lg btn-primary mx-2 mb-3 mb-sm-0 px-4 px-md-5 py-3" href="/docs/installation/">
+      <i class="fas fa-rocket mr-2"></i>
       Get Started
-      <i class="fas fa-arrow-alt-circle-right ml-1"></i>
     </a>
-    <a class="btn btn-lg btn-secondary mx-1 mb-3 mb-sm-0 px-3 px-md-4 py-2" href="https://github.com/rafa-dot-el/mcp-shell">
-      GitHub
-      <i class="fab fa-github ml-1"></i>
+    <a class="btn btn-lg btn-secondary mx-2 mb-3 mb-sm-0 px-4 px-md-5 py-3" href="https://github.com/rafa-dot-el/mcp-shell">
+      <i class="fab fa-github mr-2"></i>
+      Source Code
     </a>
-    <a class="btn btn-lg btn-info mx-1 mb-3 mb-sm-0 px-3 px-md-4 py-2" href="/docs/">
+    <a class="btn btn-lg btn-info mx-2 mb-3 mb-sm-0 px-4 px-md-5 py-3" href="/docs/">
+      <i class="fas fa-terminal mr-2"></i>
       Documentation
-      <i class="fas fa-book ml-1"></i>
     </a>
   </div>
-  <div class="mt-2">
-    <a class="btn btn-link text-light" href="#overview">
-      <i class="fa-solid fa-circle-chevron-down" style="font-size: 350%"></i>
+
+  <!-- Tech badges -->
+  <div class="mt-4">
+    <div class="hero-badges d-flex justify-content-center flex-wrap">
+      <span class="badge badge-tech mx-1 mb-2">
+        <i class="fas fa-shield-alt mr-1"></i>Security First
+      </span>
+      <span class="badge badge-tech mx-1 mb-2">
+        <i class="fas fa-globe mr-1"></i>Cross-Platform
+      </span>
+      <span class="badge badge-tech mx-1 mb-2">
+        <i class="fas fa-code mr-1"></i>Open Source
+      </span>
+      <span class="badge badge-tech mx-1 mb-2">
+        <i class="fas fa-bolt mr-1"></i>High Performance
+      </span>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <a class="btn btn-link text-light scroll-indicator" href="#overview">
+      <i class="fa-solid fa-chevron-down"></i>
+      <span class="sr-only">Scroll to learn more</span>
     </a>
   </div>
 </div>
 {{</blocks/cover>}}
 
-<!-- Overview section -->
+<!-- Enhanced Overview section -->
 {{% blocks/section color="white" %}}
 <div class="container" id="overview">
   <div class="row">
-    <div class="col-lg-10 mx-auto">
-      <h2 class="text-center">What is MCP Shell?</h2>
-      <p class="text-center lead">
-        MCP Shell is a <strong>cross-platform CLI tool</strong> that provides a Model Context Protocol (MCP) server for serving shell AI models.
-        Built with Go, it offers <strong>secure</strong>, <strong>configurable</strong>, and <strong>portable</strong> shell command execution
-        for AI systems that need to interact with system shells safely.
+    <div class="col-lg-10 mx-auto text-center">
+      <h2 class="section-title">What is MCP Shell?</h2>
+      <p class="lead section-description">
+        MCP Shell is a <strong>modern, secure CLI tool</strong> that implements the Model Context Protocol (MCP)
+        for safe shell command execution. Built with Go for <strong>performance</strong> and <strong>reliability</strong>,
+        it provides AI systems with controlled access to system shells across all major platforms.
       </p>
-      <p class="text-center">
-        <a class="btn btn-secondary" href="/docs/">
-          Learn more about MCP Shell
-          <i class="fas fa-arrow-alt-circle-right ml-1"></i>
+
+      <!-- Key stats -->
+      <div class="row mt-5">
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Go</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Dependencies</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">GPL3</div>
+            <div class="stat-label">License</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">4+</div>
+            <div class="stat-label">Platforms</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <a class="btn btn-primary btn-lg" href="/docs/">
+          <i class="fas fa-book-open mr-2"></i>
+          Explore Documentation
         </a>
-      </p>
+      </div>
     </div>
   </div>
 </div>
@@ -191,23 +240,57 @@ curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/download/mcp-sh
 </div>
 {{% /blocks/section %}}
 
-<!-- License section -->
+<!-- Enhanced Open Source section -->
 {{% blocks/section color="primary" %}}
 <div class="container">
   <div class="row">
-    <div class="col-lg-8 mx-auto text-center">
-      <h2>Open Source</h2>
-      <p class="lead">
-        MCP Shell is licensed under the <strong>GNU General Public License v3.0</strong>
+    <div class="col-lg-10 mx-auto text-center">
+      <h2 class="text-white">Free & Open Source</h2>
+      <p class="lead text-white-50 mb-5">
+        MCP Shell is licensed under <strong class="text-white">GNU General Public License v3.0</strong> —
+        ensuring software freedom for everyone, forever.
       </p>
-      <p>
-        Free software that respects your freedom and ensures all users have the rights to run, copy, distribute, study, change and improve the software.
-      </p>
-      <p>
-        <a class="btn btn-secondary" href="https://www.gnu.org/licenses/gpl-3.0.html">
-          <i class="fas fa-balance-scale"></i> View License
+
+      <!-- Open source principles -->
+      <div class="row mt-5">
+        <div class="col-md-3 col-6 mb-4">
+          <div class="open-source-principle">
+            <i class="fas fa-eye text-white fa-2x mb-3"></i>
+            <h5 class="text-white">Transparent</h5>
+            <p class="text-white-50 small">Open source code you can inspect and verify</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+          <div class="open-source-principle">
+            <i class="fas fa-code-branch text-white fa-2x mb-3"></i>
+            <h5 class="text-white">Collaborative</h5>
+            <p class="text-white-50 small">Community-driven development and contributions</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+          <div class="open-source-principle">
+            <i class="fas fa-unlock text-white fa-2x mb-3"></i>
+            <h5 class="text-white">Freedom</h5>
+            <p class="text-white-50 small">Use, modify, and distribute without restrictions</p>
+          </div>
+        </div>
+        <div class="col-md-3 col-6 mb-4">
+          <div class="open-source-principle">
+            <i class="fas fa-shield-alt text-white fa-2x mb-3"></i>
+            <h5 class="text-white">Copyleft</h5>
+            <p class="text-white-50 small">GPL3 ensures derivatives stay free</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <a class="btn btn-light btn-lg mx-2" href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank">
+          <i class="fas fa-balance-scale mr-2"></i>Read License
         </a>
-      </p>
+        <a class="btn btn-outline-light btn-lg mx-2" href="https://www.gnu.org/philosophy/free-sw.html" target="_blank">
+          <i class="fas fa-heart mr-2"></i>Learn About Free Software
+        </a>
+      </div>
     </div>
   </div>
 </div>
