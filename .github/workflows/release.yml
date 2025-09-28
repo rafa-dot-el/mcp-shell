@@ -144,16 +144,23 @@ jobs:
         run: |
           # Get the latest tag
           LATEST_TAG=$(git describe --tags --abbrev=0)
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 $LATEST_TAG^)
+
+          # Try to get previous tag, fallback to first commit if none exists
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 $LATEST_TAG^ 2>/dev/null || git rev-list --max-parents=0 HEAD)
 
           echo "## What's Changed" > changelog.md
           echo "" >> changelog.md
 
           # Generate changelog from commits
-          git log --pretty=format:"* %s (%h)" $PREVIOUS_TAG..$LATEST_TAG >> changelog.md
-
-          echo "" >> changelog.md
-          echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...$LATEST_TAG" >> changelog.md
+          if git describe --tags --abbrev=0 $LATEST_TAG^ 2>/dev/null; then
+            git log --pretty=format:"* %s (%h)" $PREVIOUS_TAG..$LATEST_TAG >> changelog.md
+            echo "" >> changelog.md
+            echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...$LATEST_TAG" >> changelog.md
+          else
+            echo "* Initial release" >> changelog.md
+            echo "" >> changelog.md
+            echo "**Full Changelog**: https://github.com/${{ github.repository }}/commits/$LATEST_TAG" >> changelog.md
+          fi
 
           # Set output
           {
