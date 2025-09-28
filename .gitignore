@@ -7,6 +7,12 @@
 bin/
 dist/
 
+# Project binaries
+mcp-shell
+/mcp-shell
+mcp-shell-*
+*.bin
+
 # Test binary, built with `go test -c`
 *.test
 

@@ -35,6 +35,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // Config represents the application configuration
@@ -77,4 +78,65 @@ func EnsureConfigDir() error {
 	}
 
 	return os.MkdirAll(configDir, 0750)
+}
+
+// ValidationError represents a configuration validation error
+type ValidationError struct {
+	Field   string
+	Value   interface{}
+	Message string
+}
+
+// Error implements the error interface
+func (e *ValidationError) Error() string {
+	return fmt.Sprintf("validation error for field '%s' (value: %v): %s", e.Field, e.Value, e.Message)
+}
+
+// Validate validates the configuration and returns any validation errors
+func (c *Config) Validate() []error {
+	var errors []error
+
+	// Validate log level
+	if err := c.validateLogLevel(); err != nil {
+		errors = append(errors, err)
+	}
+
+	// Validate conflicting options
+	if c.Verbose && c.Debug {
+		errors = append(errors, &ValidationError{
+			Field:   "verbose/debug",
+			Value:   fmt.Sprintf("verbose=%t, debug=%t", c.Verbose, c.Debug),
+			Message: "verbose and debug cannot both be true",
+		})
+	}
+
+	return errors
+}
+
+// validateLogLevel validates that the log level is valid
+func (c *Config) validateLogLevel() error {
+	validLevels := []string{"trace", "debug", "info", "warn", "error", "fatal", "panic"}
+
+	level := strings.ToLower(c.LogLevel)
+	for _, valid := range validLevels {
+		if level == valid {
+			return nil
+		}
+	}
+
+	return &ValidationError{
+		Field:   "log_level",
+		Value:   c.LogLevel,
+		Message: fmt.Sprintf("must be one of: %s", strings.Join(validLevels, ", ")),
+	}
+}
+
+// NormalizeLogLevel normalizes the log level to lowercase
+func (c *Config) NormalizeLogLevel() {
+	c.LogLevel = strings.ToLower(c.LogLevel)
+}
+
+// IsValid checks if the configuration is valid
+func (c *Config) IsValid() bool {
+	return len(c.Validate()) == 0
 }

@@ -1,13 +1,13 @@
 # MCP Shell
 
-[![CI/CD Pipeline](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/ci.yml/badge.svg)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/ci.yml)
+[![CI Main](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/ci.yml?query=branch%3Amain)
+[![CI Dev](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/ci.yml?query=branch%3Adev)
 [![Container Build](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/container.yml/badge.svg)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/container.yml)
 [![Documentation](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/docs.yml/badge.svg)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/docs.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rafa-dot-el/mcp-shell)](https://goreportcard.com/report/github.com/rafa-dot-el/mcp-shell)
-[![Coverage](https://raw.githubusercontent.com/rafa-dot-el/mcp-shell/main/coverage.svg)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/ci.yml)
+[![Coverage](https://raw.githubusercontent.com/rafa-dot-el/mcp-shell/dev/coverage.svg)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/ci.yml)
 
-[![GitHub release](https://img.shields.io/github/release/rafa-dot-el/mcp-shell.svg)](https://github.com/rafa-dot-el/mcp-shell/releases)
-[![GitHub tag](https://img.shields.io/github/tag/rafa-dot-el/mcp-shell.svg)](https://github.com/rafa-dot-el/mcp-shell/tags)
+[![Last release](https://img.shields.io/github/release/rafa-dot-el/mcp-shell.svg)](https://github.com/rafa-dot-el/mcp-shell/releases)
 [![Docker Pulls](https://img.shields.io/docker/pulls/rafadotel/mcp-shell)](https://hub.docker.com/r/rafadotel/mcp-shell)
 [![Docker Image Size](https://img.shields.io/docker/image-size/rafadotel/mcp-shell/latest)](https://hub.docker.com/r/rafadotel/mcp-shell)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
