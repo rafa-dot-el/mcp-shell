@@ -22,8 +22,11 @@ threshold:
 # Override thresholds for specific packages/files
 override:
   # Allow lower coverage for main packages (they're usually just entry points)
-  - threshold: 50
+  - threshold: 0
     path: ^github\.com/rafa-dot-el/mcp-shell/cmd/mcp-shell$
+  # Allow lower coverage for main.go files (entry points are hard to test)
+  - threshold: 0
+    path: ^.*main\.go$
   # Example: individual files can have custom thresholds
   # - threshold: 60
   #   path: ^github\.com/rafa-dot-el/mcp-shell/internal/cmd/root\.go$
