@@ -4,7 +4,7 @@
 [![Container Build](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/container.yml/badge.svg)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/container.yml)
 [![Documentation](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/docs.yml/badge.svg)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/docs.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/rafa-dot-el/mcp-shell)](https://goreportcard.com/report/github.com/rafa-dot-el/mcp-shell)
-[![Coverage Status](https://codecov.io/gh/rafa-dot-el/mcp-shell/branch/main/graph/badge.svg)](https://codecov.io/gh/rafa-dot-el/mcp-shell)
+[![Coverage Status](https://img.shields.io/badge/coverage-check%20CI-blue)](https://github.com/rafa-dot-el/mcp-shell/actions/workflows/ci.yml)
 
 [![GitHub release](https://img.shields.io/github/release/rafa-dot-el/mcp-shell.svg)](https://github.com/rafa-dot-el/mcp-shell/releases)
 [![GitHub tag](https://img.shields.io/github/tag/rafa-dot-el/mcp-shell.svg)](https://github.com/rafa-dot-el/mcp-shell/tags)
