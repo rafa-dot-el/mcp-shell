@@ -19,9 +19,11 @@ threshold:
 # Override thresholds for specific packages/files
 override:
   # Allow lower coverage for main packages (they're usually just entry points)
-  "github.com/rafa-dot-el/mcp-shell/cmd/mcp-shell": 50
+  - threshold: 50
+    path: ^github\.com/rafa-dot-el/mcp-shell/cmd/mcp-shell$
   # Example: individual files can have custom thresholds
-  # "github.com/rafa-dot-el/mcp-shell/internal/cmd/root.go": 60
+  # - threshold: 60
+  #   path: ^github\.com/rafa-dot-el/mcp-shell/internal/cmd/root\.go$
 
 # Exclude packages/files from coverage reporting
 exclude:
