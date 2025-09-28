@@ -1,4 +1,4 @@
-version: 2
+version: 1
 
 project_name: mcp-shell
 
@@ -38,13 +38,17 @@ builds:
         goarch: arm64
     ldflags:
       - -s -w
-      - -X main.version={{ .Version }}- -X main.commit={{ .Commit }}- -X main.date={{ .Date }}- -X main.builtBy=goreleaser
+      - -X main.version={{ .Version }}
+      - -X main.commit={{ .Commit }}
+      - -X main.date={{ .Date }}
+      - -X main.builtBy=goreleaser
 
 archives:
   - id: mcp-shell
     builds: [mcp-shell]
     name_template: >-
-      mcp-shell_{{- .Version -}}_{{- .Os -}}_{{- .Arch -}}{{- if .Arm -}}v{{- .Arm -}}{{- end -}}format_overrides:
+      mcp-shell_{{- .Version -}}_{{- .Os -}}_{{- .Arch -}}{{- if .Arm -}}v{{- .Arm -}}{{- end -}}
+    format_overrides:
       - goos: windows
         format: zip
     files:
@@ -87,10 +91,14 @@ dockers:
       - "rafa-dot-el/mcp-shell:{{ .Major }}.{{ .Minor }}"
     dockerfile: Dockerfile
     build_flag_templates:
-      - --label=org.opencontainers.image.title={{ .ProjectName }}- --label=org.opencontainers.image.description=MCP Shell Server for serving shell AI models
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description=MCP Shell Server for serving shell AI models
       - --label=org.opencontainers.image.url=https://github.com/rafa-dot-el/mcp-shell
       - --label=org.opencontainers.image.source=https://github.com/rafa-dot-el/mcp-shell
-      - --label=org.opencontainers.image.version={{ .Version }}- --label=org.opencontainers.image.created={{ .Date }}- --label=org.opencontainers.image.revision={{ .FullCommit }}- --label=org.opencontainers.image.licenses=GPL-3.0
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=GPL-3.0
       - --platform=linux/amd64
 
 announce:
