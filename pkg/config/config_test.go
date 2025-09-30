@@ -210,8 +210,12 @@ func TestEnsureConfigDir(t *testing.T) {
 
 	// Override the home directory for this test
 	originalHome := os.Getenv("HOME")
-	defer os.Setenv("HOME", originalHome)
-	os.Setenv("HOME", tmpDir)
+	defer func() {
+		_ = os.Setenv("HOME", originalHome) // Restore original HOME, ignore error in defer
+	}()
+	if err := os.Setenv("HOME", tmpDir); err != nil {
+		t.Fatalf("Failed to set HOME environment variable: %v", err)
+	}
 
 	err := EnsureConfigDir()
 	if err != nil {
@@ -232,9 +236,9 @@ func TestEnsureConfigDir(t *testing.T) {
 // Integration test with realistic scenarios
 func TestConfig_IntegrationScenarios(t *testing.T) {
 	scenarios := []struct {
-		name        string
-		config      *Config
-		shouldBeValid bool
+		name           string
+		config         *Config
+		shouldBeValid  bool
 		expectedErrors int
 	}{
 		{
@@ -244,7 +248,7 @@ func TestConfig_IntegrationScenarios(t *testing.T) {
 				Debug:    false,
 				LogLevel: "warn",
 			},
-			shouldBeValid: true,
+			shouldBeValid:  true,
 			expectedErrors: 0,
 		},
 		{
@@ -254,7 +258,7 @@ func TestConfig_IntegrationScenarios(t *testing.T) {
 				Debug:    false,
 				LogLevel: "debug",
 			},
-			shouldBeValid: true,
+			shouldBeValid:  true,
 			expectedErrors: 0,
 		},
 		{
@@ -264,7 +268,7 @@ func TestConfig_IntegrationScenarios(t *testing.T) {
 				Debug:    false,
 				LogLevel: "PRODUCTION",
 			},
-			shouldBeValid: false,
+			shouldBeValid:  false,
 			expectedErrors: 1,
 		},
 		{
@@ -274,7 +278,7 @@ func TestConfig_IntegrationScenarios(t *testing.T) {
 				Debug:    true,
 				LogLevel: "trace",
 			},
-			shouldBeValid: false,
+			shouldBeValid:  false,
 			expectedErrors: 1,
 		},
 	}

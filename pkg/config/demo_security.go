@@ -27,7 +27,11 @@ import (
 // This function intentionally has a security issue for demonstration
 func GenerateSecretKey() string {
 	// #nosec G404 - This is intentionally using weak random for demo purposes
-	n, _ := rand.Int(rand.Reader, big.NewInt(1000000))
+	n, err := rand.Int(rand.Reader, big.NewInt(1000000))
+	if err != nil {
+		// Fallback to a default value if random generation fails
+		return "secret_000000"
+	}
 	return "secret_" + n.String()
 }
 
