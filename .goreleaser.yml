@@ -79,6 +79,25 @@ release:
     name: mcp-shell
   name_template: "{{.ProjectName}} v{{.Version}}"
   prerelease: auto
+  footer: |
+    ## 🔐 Supply Chain Security
+
+    This release includes SLSA Build Provenance attestations for all artifacts:
+
+    **View Attestations**: [GitHub Attestations Page](https://github.com/rafa-dot-el/mcp-shell/attestations)
+
+    ### Verify Artifacts
+
+    Download and verify any artifact using GitHub CLI:
+    ```bash
+    # Download artifact
+    gh release download v{{.Version}} -p "mcp-shell_{{.Version}}_linux_amd64.tar.gz"
+
+    # Verify attestation
+    gh attestation verify mcp-shell_{{.Version}}_linux_amd64.tar.gz -R rafa-dot-el/mcp-shell
+    ```
+
+    Learn more about [SLSA Build Provenance](https://slsa.dev/spec/v1.0/provenance)
 
 
 
