@@ -2,47 +2,31 @@
 title = "MCP Shell"
 +++
 
-<!-- Enhanced Hero section with tech aesthetics -->
-{{<blocks/cover title="MCP Shell" subtitle="Secure shell execution server for AI systems. Cross-platform, configurable, and built for modern development workflows." image_anchor="center" color="dark" height="full">}}
-<div class="mt-5">
-  <div class="mx-auto">
-    <a class="btn btn-lg btn-primary mx-2 mb-3 mb-sm-0 px-4 px-md-5 py-3" href="/docs/installation/">
-      <i class="fas fa-rocket mr-2"></i>
-      Get Started
-    </a>
-    <a class="btn btn-lg btn-secondary mx-2 mb-3 mb-sm-0 px-4 px-md-5 py-3" href="https://github.com/rafa-dot-el/mcp-shell">
-      <i class="fab fa-github mr-2"></i>
-      Source Code
-    </a>
-    <a class="btn btn-lg btn-info mx-2 mb-3 mb-sm-0 px-4 px-md-5 py-3" href="/docs/">
-      <i class="fas fa-terminal mr-2"></i>
-      Documentation
-    </a>
-  </div>
+<!-- Hero section with background image -->
+{{<blocks/cover title="" subtitle="" image_anchor="center" height="full" image="/images/hero-bg.jpg">}}
+<div class="hero-content-left">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h1 class="hero-title">MCP Shell</h1>
+        <p class="hero-subtitle">Secure shell execution for AI systems</p>
+        <p class="hero-description">
+          GPL3 licensed server implementing Model Context Protocol.
+          Cross-platform. Security-first. Ready for production.
+        </p>
 
-  <!-- Tech badges -->
-  <div class="mt-4">
-    <div class="hero-badges d-flex justify-content-center flex-wrap">
-      <span class="badge badge-tech mx-1 mb-2">
-        <i class="fas fa-shield-alt mr-1"></i>Security First
-      </span>
-      <span class="badge badge-tech mx-1 mb-2">
-        <i class="fas fa-globe mr-1"></i>Cross-Platform
-      </span>
-      <span class="badge badge-tech mx-1 mb-2">
-        <i class="fas fa-code mr-1"></i>Open Source
-      </span>
-      <span class="badge badge-tech mx-1 mb-2">
-        <i class="fas fa-bolt mr-1"></i>High Performance
-      </span>
+        <div class="hero-actions mt-4">
+          <a class="btn btn-lg btn-primary mr-4 mb-3" href="/docs/installation/">
+            <i class="fas fa-rocket mr-2"></i>
+            Install Now
+          </a>
+          <a class="btn btn-lg btn-outline-light mr-4 mb-3" href="https://github.com/rafa-dot-el/mcp-shell">
+            <i class="fab fa-github mr-2"></i>
+            Source
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <div class="mt-4">
-    <a class="btn btn-link text-light scroll-indicator" href="#overview">
-      <i class="fa-solid fa-chevron-down"></i>
-      <span class="sr-only">Scroll to learn more</span>
-    </a>
   </div>
 </div>
 {{</blocks/cover>}}
@@ -59,30 +43,34 @@ title = "MCP Shell"
         it provides AI systems with controlled access to system shells across all major platforms.
       </p>
 
-      <!-- Key stats -->
+      <!-- Key values -->
       <div class="row mt-5">
         <div class="col-md-3 col-6">
-          <div class="stat-item">
-            <div class="stat-number">100%</div>
-            <div class="stat-label">Go</div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6">
-          <div class="stat-item">
-            <div class="stat-number">0</div>
-            <div class="stat-label">Dependencies</div>
-          </div>
-        </div>
-        <div class="col-md-3 col-6">
-          <div class="stat-item">
+          <div class="stat-item stat-item-featured">
             <div class="stat-number">GPL3</div>
-            <div class="stat-label">License</div>
+            <div class="stat-label">Free Software</div>
+            <div class="stat-description">Copyleft license ensuring freedom</div>
           </div>
         </div>
         <div class="col-md-3 col-6">
           <div class="stat-item">
             <div class="stat-number">4+</div>
             <div class="stat-label">Platforms</div>
+            <div class="stat-description">Linux, macOS, Windows, FreeBSD</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">MCP</div>
+            <div class="stat-label">Protocol</div>
+            <div class="stat-description">Model Context Protocol server</div>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="stat-item">
+            <div class="stat-number">AI</div>
+            <div class="stat-label">Ready</div>
+            <div class="stat-description">Built for AI system integration</div>
           </div>
         </div>
       </div>
@@ -147,26 +135,39 @@ title = "MCP Shell"
     </div>
   </div>
   <div class="row mt-5">
-    <div class="col-lg-6 mb-5 mb-lg-0">
-      <div class="installation-method">
-        <h4><i class="fas fa-snowflake mr-2"></i>Nix (Recommended)</h4>
-        <p class="text-muted mb-3">Reproducible builds and dependency management</p>
-        <pre><code># Run directly
-nix run github:rafa-dot-el/mcp-shell
-
-# Install to profile
-nix profile install github:rafa-dot-el/mcp-shell</code></pre>
-      </div>
-    </div>
-    <div class="col-lg-6 mb-5 mb-lg-0">
+    <div class="col-12 mb-4">
       <div class="installation-method">
         <h4><i class="fas fa-download mr-2"></i>Binary Download</h4>
         <p class="text-muted mb-3">Pre-built binaries for all platforms</p>
-        <pre><code># Linux
-curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/download/mcp-shell_linux_amd64.tar.gz | tar xz
+        {{< highlight bash "linenos=false" >}}
+# Linux
+curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/\
+download/mcp-shell_linux_amd64.tar.gz | tar xz
 
 # macOS
-curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/download/mcp-shell_darwin_amd64.tar.gz | tar xz</code></pre>
+curl -L https://github.com/rafa-dot-el/mcp-shell/releases/latest/\
+download/mcp-shell_darwin_amd64.tar.gz | tar xz
+
+# Windows (PowerShell)
+Invoke-WebRequest -Uri https://github.com/rafa-dot-el/mcp-shell/releases/latest/\
+download/mcp-shell_windows_amd64.zip -OutFile mcp-shell.zip
+Expand-Archive mcp-shell.zip
+{{< /highlight >}}
+      </div>
+    </div>
+    <div class="col-12 mb-4">
+      <div class="installation-method">
+        <h4><i class="fab fa-docker mr-2"></i>Container</h4>
+        <p class="text-muted mb-3">Run in isolated container environment</p>
+        {{< highlight bash "linenos=false" >}}
+# Pull and run
+docker pull rafadotel/mcp-shell:latest
+docker run -it rafadotel/mcp-shell:latest
+
+# Using podman
+podman pull rafadotel/mcp-shell:latest
+podman run -it rafadotel/mcp-shell:latest
+{{< /highlight >}}
       </div>
     </div>
   </div>
