@@ -30,6 +30,9 @@ override:
   # Allow lower coverage for main.go files (entry points are hard to test)
   - threshold: 0
     path: ^.*main\.go$
+  # Allow lower coverage for demo_security.go (intentional security demo file)
+  - threshold: 0
+    path: ^.*demo_security\.go$
   # Example: individual files can have custom thresholds
   # - threshold: 60
   #   path: ^github\.com/rafa-dot-el/mcp-shell/internal/cmd/root\.go$
