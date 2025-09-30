@@ -6,9 +6,10 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, dev ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, dev ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
 
 env:
   GO_VERSION: '1.23'
@@ -112,14 +113,14 @@ jobs:
 
       - name: Upload coverage badge
         uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/dev' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         with:
           name: coverage-badge
           path: coverage.svg
           retention-days: 1
 
       - name: Commit coverage badge
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/dev' && github.event_name == 'push' && github.repository == 'rafa-dot-el/mcp-shell'
         run: |
           if [ -f coverage.svg ]; then
             git config --local user.email "action@github.com"
@@ -168,6 +169,9 @@ jobs:
         run: go vet ./...
 
   # Security stage
+  # Additional security features enabled at repository level:
+  # - GitHub Secret Scanning for credential detection
+  # - Dependabot for automated dependency updates (.github/dependabot.yml)
   security:
     name: Security
     runs-on: ubuntu-latest
@@ -296,6 +300,8 @@ jobs:
     permissions:
       contents: write
       packages: write
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -308,6 +314,7 @@ jobs:
           go-version: '${{ env.GO_VERSION }}'
 
       - name: Run GoReleaser
+        id: goreleaser
         uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser
@@ -315,3 +322,8 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: Generate build attestations
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: 'dist/**/*'

@@ -5,31 +5,79 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  # Trigger release when PR is merged to main
+  pull_request:
+    branches: [ main ]
+    types: [ closed ]
+  # Manual release trigger
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'Tag to release'
+      version_type:
+        description: 'Version bump type'
         required: true
-        type: string
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      skip_tests:
+        description: 'Skip test validation'
+        required: false
+        default: false
+        type: boolean
 
 env:
-  GO_VERSION: '1.21'
-  REGISTRY: ghcr.io
+  GO_VERSION: '1.23'
 
 permissions:
   contents: write
   packages: write
   id-token: write
+  attestations: write
 
 jobs:
-  release:
-    name: Release
+  # Only run if PR was merged (not just closed)
+  check_merge:
+    name: Check PR Merge
     runs-on: ubuntu-latest
+    if: (github.event_name == 'workflow_dispatch' || (github.event.pull_request.merged == true)) && github.repository == 'rafa-dot-el/mcp-shell'
+    outputs:
+      should_release: ${{ steps.check.outputs.should_release }}
+      version_type: ${{ steps.check.outputs.version_type }}
     steps:
-      - name: Checkout
+      - name: Determine release parameters
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "version_type=${{ github.event.inputs.version_type }}" >> $GITHUB_OUTPUT
+          else
+            # Auto-determine version type from PR labels or branch name
+            PR_BRANCH="${{ github.event.pull_request.head.ref }}"
+            if [[ "$PR_BRANCH" == feature/* ]]; then
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "version_type=minor" >> $GITHUB_OUTPUT
+            elif [[ "$PR_BRANCH" == fix/* ]]; then
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "version_type=patch" >> $GITHUB_OUTPUT
+            elif [[ "$PR_BRANCH" == chore/* ]]; then
+              echo "should_release=true" >> $GITHUB_OUTPUT
+              echo "version_type=patch" >> $GITHUB_OUTPUT
+            else
+              echo "should_release=false" >> $GITHUB_OUTPUT
+              echo "version_type=patch" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+  # Pre-release validation
+  validate:
+    name: Pre-Release Validation
+    runs-on: ubuntu-latest
+    needs: check_merge
+    if: needs.check_merge.outputs.should_release == 'true' && github.event.inputs.skip_tests != 'true'
+    steps:
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -37,20 +85,107 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version: '${{ env.GO_VERSION }}'
 
-      - name: Login to Container Registry
-        uses: docker/login-action@v3
+      - name: Cache Go modules
+        uses: actions/cache@v3
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          path: ~/go/pkg/mod
+          key: '${{ runner.os }}-go-${{ hashFiles(''**/go.sum'') }}'
+          restore-keys: |
+            '${{ runner.os }}-go-'
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run tests
+        run: go test -v -race ./...
+
+      - name: Run linting
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: latest
+          args: --timeout=5m
+
+      - name: Run security scan
+        run: |
+          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          gosec ./...
+
+  # Create release
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [check_merge, validate]
+    if: always() && needs.check_merge.outputs.should_release == 'true' && (needs.validate.result == 'success' || needs.validate.result == 'skipped')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '${{ env.GO_VERSION }}'
+
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Determine next version
+        id: version
+        run: |
+          # Get current version from VERSION file or latest tag
+          if [ -f VERSION ]; then
+            CURRENT_VERSION=$(cat VERSION)
+          else
+            CURRENT_VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "0.0.0")
+          fi
+
+          echo "Current version: $CURRENT_VERSION"
+
+          # Parse version components
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
+
+          # Bump version based on type
+          case "${{ needs.check_merge.outputs.version_type }}" in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+
+          NEW_VERSION="${MAJOR}.${MINOR}.${PATCH}"
+          echo "New version: $NEW_VERSION"
+
+          # Update VERSION file
+          echo "$NEW_VERSION" > VERSION
+
+          # Set outputs
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Commit version bump
+        run: |
+          git add VERSION
+          git commit -m "chore: bump version to ${{ steps.version.outputs.version }} [skip ci]"
+          git tag ${{ steps.version.outputs.tag }}
+          git push origin main
+          git push origin ${{ steps.version.outputs.tag }}
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser
           version: latest
@@ -58,124 +193,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Build and push container images
-  container:
-    name: Container Images
-    runs-on: ubuntu-latest
-    needs: release
-    strategy:
-      matrix:
-        platform:
-          - linux/amd64
-          - linux/arm64
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Container Registry
-        uses: docker/login-action@v3
+      - name: Generate build attestations
+        uses: actions/attest-build-provenance@v1
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ github.repository }}
-          tags: |
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha,prefix={{branch}}-
-          labels: |
-            org.opencontainers.image.title=MCP Shell
-            org.opencontainers.image.description=MCP Shell Server for serving shell AI models
-            org.opencontainers.image.vendor=Rafael
-            org.opencontainers.image.licenses=GPL-3.0
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          platforms: ${{ matrix.platform }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  # Deploy documentation
-  deploy-docs:
-    name: Deploy Documentation
-    runs-on: ubuntu-latest
-    needs: release
-    if: startsWith(github.ref, 'refs/tags/v')
-    steps:
-      - name: Trigger documentation deployment
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'docs.yml',
-              ref: 'main'
-            })
-
-  # Create GitHub Release
-  github-release:
-    name: GitHub Release
-    runs-on: ubuntu-latest
-    needs: [release, container]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Generate changelog
-        id: changelog
-        run: |
-          # Get the latest tag
-          LATEST_TAG=$(git describe --tags --abbrev=0)
-
-          # Try to get previous tag, fallback to first commit if none exists
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 $LATEST_TAG^ 2>/dev/null || git rev-list --max-parents=0 HEAD)
-
-          echo "## What's Changed" > changelog.md
-          echo "" >> changelog.md
-
-          # Generate changelog from commits
-          if git describe --tags --abbrev=0 $LATEST_TAG^ 2>/dev/null; then
-            git log --pretty=format:"* %s (%h)" $PREVIOUS_TAG..$LATEST_TAG >> changelog.md
-            echo "" >> changelog.md
-            echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...$LATEST_TAG" >> changelog.md
-          else
-            echo "* Initial release" >> changelog.md
-            echo "" >> changelog.md
-            echo "**Full Changelog**: https://github.com/${{ github.repository }}/commits/$LATEST_TAG" >> changelog.md
-          fi
-
-          # Set output
-          {
-            echo 'CHANGELOG<<EOF'
-            cat changelog.md
-            echo EOF
-          } >> $GITHUB_OUTPUT
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: Release ${{ github.ref_name }}
-          body: ${{ steps.changelog.outputs.CHANGELOG }}
-          draft: false
-          prerelease: ${{ contains(github.ref_name, '-') }}
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          subject-path: 'dist/**/*'
