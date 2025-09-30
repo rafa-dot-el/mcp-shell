@@ -2,13 +2,29 @@
 # Copyright (C) 2025 Rafael
 # Licensed under GPL-3.0
 
+# Build stage
+FROM golang:1.23-alpine AS builder
+
+WORKDIR /build
+
+# Copy go mod files
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o mcp-shell ./cmd/mcp-shell
+
+# Final stage
 FROM scratch
 
 # Copy CA certificates for HTTPS requests
 COPY --from=alpine:latest /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-# Copy the binary
-COPY mcp-shell /usr/local/bin/mcp-shell
+# Copy the binary from builder
+COPY --from=builder /build/mcp-shell /usr/local/bin/mcp-shell
 
 # Create a non-root user
 USER 65534:65534

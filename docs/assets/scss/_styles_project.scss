@@ -2,42 +2,371 @@
 Add styles for the project here.
 */
 
-// Hero section enhancements
-.td-cover {
-  background: $hero-background;
-  padding-top: 8rem;
-  padding-bottom: 8rem;
+// Import terminal/tech fonts
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Varela+Round&display=swap');
+
+// Terminal-style color palette
+$terminal-green: #22c55e;      // Primary accent - terminal green
+$terminal-green-light: #34d399; // Lighter variant
+$terminal-green-dark: #16a34a;  // Darker variant
+$terminal-cyan: #06b6d4;       // Secondary accent - cyan
+$terminal-blue: #3b82f6;       // Info/link color
+$terminal-purple: #8b5cf6;     // Accent variant
+$terminal-bg-dark: #0f172a;    // Dark background
+$terminal-bg-light: #1e293b;   // Light background
+$terminal-text: #f8fafc;       // Primary text
+$terminal-text-muted: rgba(248, 250, 252, 0.7); // Muted text
+
+// Gradients using terminal colors
+$terminal-gradient: linear-gradient(135deg, $terminal-green 0%, $terminal-cyan 100%);
+$terminal-glow: 0 0 20px rgba($terminal-green, 0.3);
+$hero-text-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+
+// Font family variables
+$font-header: 'Oxanium', sans-serif;        // Headers and hero
+$font-body: 'Varela Round', sans-serif;     // Paragraphs and body text
+$font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace; // Code and technical
+
+// Global header styling with Oxanium
+h1, h2, h3, h4, h5, h6,
+.display-1, .display-2, .display-3, .display-4,
+.section-title {
+  font-family: $font-header !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+// Global paragraph and body text styling with Varela Round
+p, .lead, .section-description,
+body, .td-content {
+  font-family: $font-body !important;
+  font-size: 1.125rem !important;
+  line-height: 1.7 !important;
+}
+
+// Enhanced hero section with network mesh background
+// Background image source: https://www.freepik.com/free-photos-vectors/ai-background/2#uuid=357aa474-e006-4be0-88c0-9f494aa318f7
+// Using network mesh/AI-themed background for tech aesthetic
+.td-cover-block.-bg-dark,
+.td-cover-block.td-overlay--dark,
+.td-cover-block {
+  background-image: url('/images/hero-bg.jpg') !important;
+  background-position: center center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-color: transparent !important;
+  position: relative;
+
+  &::after {
+    display: none !important;
+  }
+
+  // Override theme's center alignment for left-aligned layout
+  .col-12 {
+    text-align: left !important;
+  }
+
+  .td-overlay__inner {
+    text-align: left !important;
+    max-width: none !important;
+  }
+
+  .text-center {
+    text-align: left !important;
+  }
+
+  // Gradient overlay from right to left for better text visibility
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      linear-gradient(90deg,
+        rgba($terminal-bg-dark, 0.5) 0%,
+        rgba($terminal-bg-dark, 0.3) 50%,
+        rgba($terminal-bg-dark, 0.1) 100%
+      );
+    pointer-events: none;
+    z-index: 1;
+  }
 
   .display-1, .display-2, .display-3, .display-4 {
     text-shadow: $hero-text-shadow;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: white;
+    position: relative;
+    z-index: 2;
   }
 
   .lead {
     text-shadow: $hero-text-shadow;
-    font-size: 1.25rem;
+    font-size: 1.375rem;
     font-weight: 400;
-    opacity: 0.95;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
   }
 
   .btn {
-    box-shadow: $box-shadow-lg;
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
     font-weight: 600;
     text-transform: none;
     letter-spacing: 0.025em;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    position: relative;
+    z-index: 2;
 
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    &.btn-primary {
+      background: $terminal-gradient;
+      color: $terminal-text;
+      border: none;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px -5px rgba($terminal-green, 0.4);
+        background: linear-gradient(135deg, $terminal-green-light 0%, $terminal-cyan 100%);
+      }
+    }
+
+    &.btn-outline-light, &.btn-secondary {
+      background: rgba($terminal-green, 0.1);
+      color: $terminal-green;
+      border: 2px solid $terminal-green;
+      backdrop-filter: blur(10px);
+
+      &:hover {
+        background: $terminal-green;
+        color: $terminal-bg-dark;
+        transform: translateY(-3px);
+        box-shadow: $terminal-glow;
+      }
+    }
+
+    &.btn-info {
+      background: rgba($terminal-cyan, 0.9);
+      color: $terminal-bg-dark;
+
+      &:hover {
+        background: $terminal-cyan;
+        transform: translateY(-3px);
+        box-shadow: 0 0 20px rgba($terminal-cyan, 0.3);
+      }
     }
   }
 }
 
-// Section styling
+// Left-aligned hero content
+.hero-content-left {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+
+  .hero-title {
+    font-family: 'Saira', sans-serif;
+    font-size: 5.5rem;
+    font-weight: 800;
+    color: $terminal-text;
+    text-shadow: $hero-text-shadow;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .hero-subtitle {
+    font-family: 'Saira', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: $terminal-green;
+    margin-bottom: 1.5rem;
+    text-shadow: $terminal-glow;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-description {
+    font-family: 'Varela Round', sans-serif;
+    font-size: 1.375rem;
+    font-weight: 400;
+    color: $terminal-text-muted;
+    line-height: 1.7;
+    margin-bottom: 0;
+    max-width: 700px;
+  }
+
+  .hero-actions {
+    .btn {
+      box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
+      font-weight: 600;
+      text-transform: none;
+      letter-spacing: 0.025em;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+
+      &.btn-primary {
+        background: $accent-gradient;
+        color: white;
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 25px -5px rgba($accent, 0.4);
+        }
+      }
+
+      &.btn-outline-light {
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.5);
+          transform: translateY(-3px);
+          box-shadow: 0 10px 25px -5px rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+}
+
+// Left-aligned hero badges
+.hero-badges-left {
+  text-align: left;
+
+  .badge-tech {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    i {
+      color: $terminal-green;
+    }
+
+    &.badge-featured {
+      background: rgba($terminal-green, 0.2);
+      border-color: rgba($terminal-green, 0.4);
+      font-weight: 600;
+
+      &:hover {
+        background: rgba($terminal-green, 0.3);
+        border-color: rgba($terminal-green, 0.6);
+      }
+    }
+  }
+}
+
+// Hero badges styling (centered - for backward compatibility)
+.hero-badges {
+  .badge-tech {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    i {
+      color: $terminal-green;
+    }
+
+    &.badge-featured {
+      background: rgba($terminal-green, 0.2);
+      border-color: rgba($terminal-green, 0.4);
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 0 20px rgba($terminal-green, 0.3);
+
+      &:hover {
+        background: rgba($terminal-green, 0.3);
+        box-shadow: 0 0 30px rgba($terminal-green, 0.5);
+      }
+
+      i {
+        color: $terminal-green;
+      }
+    }
+  }
+}
+
+// Hero freedom message
+.hero-freedom-message {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  font-weight: 400;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+// Scroll indicator animation
+.scroll-indicator {
+  animation: bounce 2s infinite;
+  font-size: 2rem;
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+    text-decoration: none;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+// Enhanced section styling
 .td-block {
-  padding: 5rem 0;
+  padding: 6rem 0;
+
+  .section-title {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    color: $primary;
+    font-size: 2.5rem;
+  }
+
+  .section-description {
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.7;
+    color: $secondary;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
   h2 {
     font-weight: 700;
@@ -52,53 +381,181 @@ Add styles for the project here.
   }
 }
 
-// Feature cards
-.feature-card {
+// Stats section
+.stat-item {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
+  transition: all 0.3s ease;
 
-  .fa-4x {
-    color: $primary;
-    margin-bottom: 1.5rem;
+  &:hover {
+    transform: translateY(-5px);
   }
 
-  h4 {
+  .stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: $accent;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    font-family: $font-family-sans-serif;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    color: $secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-description {
+    font-size: 0.75rem;
+    color: lighten($secondary, 10%);
+    line-height: 1.4;
+  }
+
+  &.stat-item-featured {
+    position: relative;
+
+    .stat-number {
+      color: $terminal-green;
+      text-shadow: 0 0 10px rgba($terminal-green, 0.3);
+    }
+
+    .stat-label {
+      color: $terminal-green;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 3px;
+      background: linear-gradient(90deg, $terminal-green 0%, $accent 100%);
+      border-radius: 2px;
+    }
   }
 }
 
-// Code blocks
-pre {
-  background: $dark;
-  border-radius: $border-radius-lg;
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-  box-shadow: $box-shadow;
+// Modern feature cards with tech styling
+.feature-card {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: $border-radius-xl;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  height: 100%;
 
-  code {
-    color: #e2e8f0;
-    font-size: 0.875rem;
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: $card-hover-shadow;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba($accent, 0.3);
+  }
+
+  .fa-4x {
+    color: $accent;
+    margin-bottom: 2rem;
+    filter: drop-shadow(0 4px 8px rgba($accent, 0.2));
+    transition: all 0.3s ease;
+  }
+
+  &:hover .fa-4x {
+    color: $terminal-green;
+    filter: drop-shadow($terminal-glow);
+  }
+
+  h4 {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: white;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.8);
     line-height: 1.6;
   }
 }
 
-// Installation section
-.installation-method {
-  background: $light;
+// Terminal-style code blocks
+pre {
+  background: $terminal-bg-dark !important;
   border-radius: $border-radius-lg;
   padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba($terminal-green, 0.2);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, $terminal-green 0%, $terminal-cyan 100%);
+  }
+
+  code {
+    color: $terminal-text !important;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    font-family: $font-mono;
+  }
+}
+
+// Modern installation cards
+.installation-method {
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: $border-radius-xl;
+  padding: 2.5rem;
   margin-bottom: 2rem;
-  border-left: 4px solid $primary;
+  border: 1px solid rgba($terminal-green, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, $terminal-green 0%, $terminal-cyan 100%);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    border-color: rgba($terminal-green, 0.4);
+  }
 
   h4 {
-    color: $primary;
-    font-weight: 600;
+    color: $terminal-bg-dark;
+    font-weight: 700;
     margin-bottom: 1rem;
+    letter-spacing: -0.02em;
 
     i {
-      margin-right: 0.5rem;
+      margin-right: 0.75rem;
+      color: $terminal-green;
     }
+  }
+
+  .text-muted {
+    color: #475569 !important;
+    font-size: 0.95rem;
   }
 }
 
@@ -175,6 +632,125 @@ pre {
   }
 }
 
+// Open source principles styling
+.open-source-principle {
+  padding: 1rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+
+    i {
+      color: $terminal-green !important;
+    }
+  }
+
+  h5 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+}
+
+// Enhanced button styling for primary sections
+.td-block.td-block--primary {
+  .btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-weight: 600;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+// Responsive enhancements
+@media (max-width: 768px) {
+  .td-cover {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    min-height: 100vh;
+
+    .display-1, .display-2, .display-3, .display-4 {
+      font-size: 2.5rem;
+    }
+
+    .lead {
+      font-size: 1.125rem;
+    }
+
+    .btn-lg {
+      font-size: 1rem;
+      padding: 0.75rem 1.5rem;
+      margin: 0.25rem;
+    }
+  }
+
+  .hero-content-left {
+    .hero-title {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-description {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-actions {
+      .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.75rem;
+        margin-right: 0 !important;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  .hero-badges-left {
+    margin-top: 1.5rem;
+
+    .badge-tech {
+      font-size: 0.75rem;
+      padding: 0.375rem 0.75rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .hero-badges .badge-tech {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+  }
+
+  .section-title {
+    font-size: 2rem !important;
+  }
+
+  .stat-item .stat-number {
+    font-size: 2.5rem;
+  }
+
+  .feature-card {
+    margin-bottom: 2rem;
+  }
+
+  .installation-method {
+    padding: 2rem 1.5rem;
+  }
+}
+
 // Footer enhancements
 .td-footer {
   background: $dark;
@@ -188,5 +764,150 @@ pre {
       color: white;
       text-decoration: none;
     }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .td-block {
+    &.td-block--white {
+      background-color: lighten($dark, 3%) !important;
+    }
+  }
+
+  .installation-method {
+    background: rgba($terminal-bg-light, 0.5) !important;
+    border-color: rgba($terminal-green, 0.3) !important;
+    color: $terminal-text !important;
+
+    h4 {
+      color: $terminal-text !important;
+
+      i {
+        color: $terminal-green !important;
+      }
+    }
+
+    .text-muted {
+      color: $terminal-text-muted !important;
+    }
+  }
+
+  .section-title {
+    color: white !important;
+  }
+
+  .section-description {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .stat-description {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+}
+
+// Enhanced syntax highlighting with dark mode support
+.highlight {
+  position: relative;
+  margin: 2rem 0;
+
+  pre {
+    background: $terminal-bg-dark !important;
+    border: 1px solid rgba($terminal-green, 0.2);
+    border-radius: $border-radius-lg;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow-x: auto;
+    padding: 1.5rem !important;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, $terminal-green 0%, $terminal-cyan 100%);
+      border-radius: $border-radius-lg $border-radius-lg 0 0;
+    }
+
+    code {
+      font-family: $font-mono;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: $terminal-text !important;
+    }
+  }
+
+  // Dark theme syntax highlighting (default)
+  .c { color: #6b7280 !important; } // Comments
+  .k { color: #8b5cf6 !important; } // Keywords
+  .s { color: $terminal-green !important; } // Strings
+  .m { color: #f59e0b !important; } // Numbers
+  .o { color: $terminal-cyan !important; } // Operators
+  .nb { color: $terminal-blue !important; } // Built-ins
+  .nf { color: #f472b6 !important; } // Functions
+  .sh { color: #ec4899 !important; } // Shell prompts (#)
+  .c1 { color: #6b7280 !important; } // Single line comments
+  .cm { color: #6b7280 !important; } // Multi-line comments
+  .cp { color: #8b5cf6 !important; } // Preprocessor
+  .kn { color: #8b5cf6 !important; } // Keywords namespace
+  .kc { color: #f59e0b !important; } // Keywords constant
+  .kt { color: $terminal-cyan !important; } // Keywords type
+  .nt { color: #f472b6 !important; } // Name tag
+  .na { color: $terminal-blue !important; } // Name attribute
+  .nv { color: #ec4899 !important; } // Name variable
+  .s1 { color: $terminal-green !important; } // String single quote
+  .s2 { color: $terminal-green !important; } // String double quote
+  .se { color: #f59e0b !important; } // String escape
+}
+
+// Light mode syntax highlighting adjustments
+@media (prefers-color-scheme: light) {
+  .highlight {
+    pre {
+      background: lighten($code-bg, 5%) !important;
+      border-color: rgba($primary, 0.2);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+      code {
+        color: #1e293b;
+      }
+    }
+
+    // Light mode syntax colors
+    .c { color: #475569; } // Comments
+    .k { color: #7c3aed; } // Keywords
+    .s { color: #059669; } // Strings
+    .m { color: #d97706; } // Numbers
+    .o { color: #0891b2; } // Operators
+    .nb { color: #2563eb; } // Built-ins
+    .nf { color: #dc2626; } // Functions
+    .sh { color: #be185d; } // Shell prompts
+    .c1 { color: #475569; } // Single line comments
+    .cm { color: #475569; } // Multi-line comments
+    .cp { color: #7c3aed; } // Preprocessor
+    .kn { color: #7c3aed; } // Keywords namespace
+    .kc { color: #d97706; } // Keywords constant
+    .kt { color: #0891b2; } // Keywords type
+    .nt { color: #dc2626; } // Name tag
+    .na { color: #2563eb; } // Name attribute
+    .nv { color: #be185d; } // Name variable
+    .s1 { color: #059669; } // String single quote
+    .s2 { color: #059669; } // String double quote
+    .se { color: #d97706; } // String escape
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .scroll-indicator {
+    animation: none;
   }
 }

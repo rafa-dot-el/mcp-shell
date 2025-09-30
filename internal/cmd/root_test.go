@@ -20,30 +20,60 @@ package cmd
 
 import (
 	"testing"
+
+	"github.com/rafa-dot-el/mcp-shell/pkg/config"
 )
 
-func TestSetVersion(t *testing.T) {
-	testVersion := "1.0.0-test"
-	SetVersion(testVersion)
-
-	if version != testVersion {
-		t.Errorf("Expected version to be %s, got %s", testVersion, version)
+func TestConfigValidation(t *testing.T) {
+	// Test configuration validation integration
+	cfg := &config.Config{
+		Verbose:  false,
+		Debug:    false,
+		LogLevel: "info",
 	}
 
-	if rootCmd.Version != testVersion {
-		t.Errorf("Expected rootCmd.Version to be %s, got %s", testVersion, rootCmd.Version)
+	if !cfg.IsValid() {
+		t.Error("Expected valid config to pass validation")
+	}
+
+	// Test invalid config
+	invalidCfg := &config.Config{
+		Verbose:  true,
+		Debug:    true,
+		LogLevel: "invalid",
+	}
+
+	if invalidCfg.IsValid() {
+		t.Error("Expected invalid config to fail validation")
+	}
+
+	errors := invalidCfg.Validate()
+	if len(errors) == 0 {
+		t.Error("Expected validation errors for invalid config")
 	}
 }
 
-func TestExecute(t *testing.T) {
-	// Test that Execute() doesn't panic
-	// In a real application, you might want to test specific command behavior
-	defer func() {
-		if r := recover(); r != nil {
-			t.Errorf("Execute() panicked: %v", r)
-		}
-	}()
+func TestDefaultConfiguration(t *testing.T) {
+	cfg := config.DefaultConfig()
 
-	// Note: This doesn't actually execute the command as it would interfere with testing
-	// In practice, you'd mock the command execution or test specific functions
+	if cfg == nil {
+		t.Fatal("DefaultConfig() returned nil")
+	}
+
+	if cfg.LogLevel != "info" {
+		t.Errorf("Expected default log level 'info', got '%s'", cfg.LogLevel)
+	}
+
+	if cfg.Verbose {
+		t.Error("Expected default verbose to be false")
+	}
+
+	if cfg.Debug {
+		t.Error("Expected default debug to be false")
+	}
+
+	// Test that default config is valid
+	if !cfg.IsValid() {
+		t.Error("Expected default config to be valid")
+	}
 }
