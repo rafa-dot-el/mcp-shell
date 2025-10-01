@@ -77,8 +77,8 @@ jobs:
       # Run comprehensive tests
       - name: Install test tools
         run: |
-          go install gotest.tools/gotestsum@latest
-          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          go install gotest.tools/gotestsum@v1.12.0
+          go install github.com/securego/gosec/v2/cmd/gosec@v2.22.0
           go install golang.org/x/vuln/cmd/govulncheck@latest
 
       - name: Run unit tests with coverage
