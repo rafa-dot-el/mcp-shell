@@ -109,7 +109,7 @@ jobs:
 
       - name: Run security scan
         run: |
-          go install github.com/securego/gosec/v2/cmd/gosec@latest
+          go install github.com/securego/gosec/v2/cmd/gosec@v2.22.0
           gosec ./...
 
   # Create release
