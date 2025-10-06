@@ -156,7 +156,7 @@ jobs:
       - name: Run linting analysis
         id: lint
         continue-on-error: true
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v8
         with:
           version: latest
           args: --out-format=json --issues-exit-code=0 > lint-report.json
