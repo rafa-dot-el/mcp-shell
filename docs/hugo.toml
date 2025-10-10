@@ -95,6 +95,10 @@ time_format_blog = "2006-01-02"
     url = "/docs/"
     weight = 10
   [[menu.main]]
+    name = "Tutorials"
+    url = "/tutorials/"
+    weight = 15
+  [[menu.main]]
     name = "GitHub"
     url = "https://github.com/rafa-dot-el/mcp-shell"
     weight = 20
