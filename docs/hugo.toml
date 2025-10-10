@@ -34,6 +34,11 @@ time_format_blog = "2006-01-02"
   description = "MCP Shell Server for serving shell AI models"
   author = "Rafael"
 
+  # Search configuration
+  offlineSearch = true
+  offlineSearchSummaryLength = 200
+  offlineSearchMaxResults = 25
+
   # Docsy theme settings
   github_repo = "https://github.com/rafa-dot-el/mcp-shell"
   github_branch = "main"
@@ -43,7 +48,7 @@ time_format_blog = "2006-01-02"
     sidebar_menu_compact = false
     breadcrumb_disable = false
     sidebar_search_disable = false
-    navbar_logo = true
+    navbar_logo = false
     footer_about_enable = true
 
   [params.ui.feedback]
@@ -78,8 +83,8 @@ time_format_blog = "2006-01-02"
   # Syntax highlighting
   [markup.highlight]
     style = "github"
-    lineNos = true
-    lineNumbersInTable = true
+    lineNos = false
+    lineNumbersInTable = false
     tabWidth = 2
     guessSyntax = true
 
@@ -94,11 +99,18 @@ time_format_blog = "2006-01-02"
     url = "https://github.com/rafa-dot-el/mcp-shell"
     weight = 20
 
+# Taxonomy configuration
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
 # Output formats
 [outputs]
   home = ["HTML", "RSS", "JSON"]
   page = ["HTML"]
   section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  term = ["HTML", "RSS"]
 
 # Sitemap configuration
 [sitemap]

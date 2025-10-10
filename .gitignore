@@ -150,3 +150,10 @@ __debug_bin
 .secrets.baseline
 
 # Note: .envrc is NOT ignored - it should be committed for consistent direnv experience
+# Claude Code files
+.claude/
+
+# Hugo build files
+.hugo_build.lock
+public/
+docs/public/
