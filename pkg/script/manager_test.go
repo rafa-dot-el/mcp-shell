@@ -410,3 +410,302 @@ func TestManager_Reload(t *testing.T) {
 		t.Errorf("Expected 2 scripts after reload, got %d", len(scripts))
 	}
 }
+
+func TestManager_DiscoverFolder_InvalidGlob(t *testing.T) {
+	cfg := config.DefaultConfig()
+	cfg.ScriptFolders = []config.ScriptFolder{
+		{
+			Name:               "invalid-glob",
+			Description:        "Test invalid glob",
+			Path:               "\\invalid[glob",
+			DefaultInterpreter: "bash",
+		},
+	}
+
+	_, err := NewManager(cfg)
+	if err == nil {
+		t.Error("Expected error for invalid glob pattern, got nil")
+	}
+}
+
+func TestManager_DiscoverFolder_SkipsDirectories(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptsDir := filepath.Join(tmpDir, "scripts")
+	if err := os.MkdirAll(scriptsDir, 0750); err != nil {
+		t.Fatalf("Failed to create scripts directory: %v", err)
+	}
+
+	// Create a script file
+	scriptPath := filepath.Join(scriptsDir, "script.sh")
+	if err := os.WriteFile(scriptPath, []byte("#!/bin/bash\necho test"), 0750); err != nil {
+		t.Fatalf("Failed to create test script: %v", err)
+	}
+
+	// Create a subdirectory that should be skipped
+	subDir := filepath.Join(scriptsDir, "subdir.sh")
+	if err := os.MkdirAll(subDir, 0750); err != nil {
+		t.Fatalf("Failed to create subdirectory: %v", err)
+	}
+
+	cfg := config.DefaultConfig()
+	cfg.ScriptFolders = []config.ScriptFolder{
+		{
+			Name:               "test-folder",
+			Description:        "Test scripts",
+			Path:               filepath.Join(scriptsDir, "*.sh"),
+			DefaultInterpreter: "bash",
+		},
+	}
+
+	manager, err := NewManager(cfg)
+	if err != nil {
+		t.Fatalf("NewManager() failed: %v", err)
+	}
+
+	scripts := manager.ListScripts()
+	// Should only find the script file, not the directory
+	if len(scripts) != 1 {
+		t.Errorf("Expected 1 discovered script (directories should be skipped), got %d", len(scripts))
+	}
+}
+
+func TestManager_DiscoverFolder_NonExecutableFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptsDir := filepath.Join(tmpDir, "scripts")
+	if err := os.MkdirAll(scriptsDir, 0750); err != nil {
+		t.Fatalf("Failed to create scripts directory: %v", err)
+	}
+
+	// Create a non-executable script file
+	scriptPath := filepath.Join(scriptsDir, "script.sh")
+	if err := os.WriteFile(scriptPath, []byte("#!/bin/bash\necho test"), 0640); err != nil {
+		t.Fatalf("Failed to create test script: %v", err)
+	}
+
+	cfg := config.DefaultConfig()
+	cfg.ScriptFolders = []config.ScriptFolder{
+		{
+			Name:               "test-folder",
+			Description:        "Test scripts",
+			Path:               filepath.Join(scriptsDir, "*.sh"),
+			DefaultInterpreter: "bash",
+		},
+	}
+
+	manager, err := NewManager(cfg)
+	if err != nil {
+		t.Fatalf("NewManager() failed: %v", err)
+	}
+
+	// Should still discover the script even if not executable
+	scripts := manager.ListScripts()
+	if len(scripts) != 1 {
+		t.Errorf("Expected 1 discovered script, got %d", len(scripts))
+	}
+
+	// Verify IsExecutable is false
+	script, err := manager.GetScript("test-folder:script.sh")
+	if err != nil {
+		t.Fatalf("GetScript() failed: %v", err)
+	}
+
+	if script.IsExecutable {
+		t.Error("Expected script to not be executable")
+	}
+}
+
+func TestManager_DiscoverFolder_ConfigScriptPriority(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptsDir := filepath.Join(tmpDir, "scripts")
+	if err := os.MkdirAll(scriptsDir, 0750); err != nil {
+		t.Fatalf("Failed to create scripts directory: %v", err)
+	}
+
+	// Create a script file
+	scriptPath := filepath.Join(scriptsDir, "test.sh")
+	if err := os.WriteFile(scriptPath, []byte("#!/bin/bash\necho test"), 0750); err != nil {
+		t.Fatalf("Failed to create test script: %v", err)
+	}
+
+	cfg := config.DefaultConfig()
+	// Add script folder that will try to discover the script
+	cfg.ScriptFolders = []config.ScriptFolder{
+		{
+			Name:               "test-folder",
+			Description:        "Discovered scripts",
+			Path:               filepath.Join(scriptsDir, "*.sh"),
+			DefaultInterpreter: "bash",
+		},
+	}
+
+	manager, err := NewManager(cfg)
+	if err != nil {
+		t.Fatalf("NewManager() failed: %v", err)
+	}
+
+	// First discovery should work
+	scripts := manager.ListScripts()
+	if len(scripts) != 1 {
+		t.Errorf("Expected 1 script after first discovery, got %d", len(scripts))
+	}
+
+	// Verify discovered script name has folder prefix
+	script, err := manager.GetScript("test-folder:test.sh")
+	if err != nil {
+		t.Errorf("GetScript() failed for discovered script: %v", err)
+	}
+
+	if script.Config.Description != "Discovered scripts" {
+		t.Errorf("Expected discovered script description, got '%s'", script.Config.Description)
+	}
+
+	// Reload should skip already-existing script
+	if err := manager.Reload(); err != nil {
+		t.Errorf("Reload() failed: %v", err)
+	}
+
+	scripts = manager.ListScripts()
+	if len(scripts) != 1 {
+		t.Errorf("Expected 1 script after reload (duplicate should be skipped), got %d", len(scripts))
+	}
+}
+
+func TestManager_ValidateScript_FileDeleted(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptPath := filepath.Join(tmpDir, "test.sh")
+
+	if err := os.WriteFile(scriptPath, []byte("#!/bin/bash\necho test"), 0750); err != nil {
+		t.Fatalf("Failed to create test script: %v", err)
+	}
+
+	cfg := config.DefaultConfig()
+	cfg.Scripts = []config.Script{
+		{Name: "test", Path: scriptPath, Interpreter: "bash"},
+	}
+
+	manager, err := NewManager(cfg)
+	if err != nil {
+		t.Fatalf("NewManager() failed: %v", err)
+	}
+
+	// Delete the script file
+	if err := os.Remove(scriptPath); err != nil {
+		t.Fatalf("Failed to delete script file: %v", err)
+	}
+
+	// Validation should fail
+	err = manager.ValidateScript("test")
+	if err == nil {
+		t.Error("Expected error when script file is deleted, got nil")
+	}
+}
+
+func TestManager_ValidateScript_InterpreterDisallowed(t *testing.T) {
+	tmpDir := t.TempDir()
+	scriptPath := filepath.Join(tmpDir, "test.sh")
+
+	if err := os.WriteFile(scriptPath, []byte("#!/bin/bash\necho test"), 0750); err != nil {
+		t.Fatalf("Failed to create test script: %v", err)
+	}
+
+	cfg := config.DefaultConfig()
+	cfg.Scripts = []config.Script{
+		{Name: "test", Path: scriptPath, Interpreter: "bash"},
+	}
+
+	manager, err := NewManager(cfg)
+	if err != nil {
+		t.Fatalf("NewManager() failed: %v", err)
+	}
+
+	// Change config to disallow bash interpreter
+	cfg.Security.AllowedInterpreters = []string{"python3"}
+
+	// Validation should fail
+	err = manager.ValidateScript("test")
+	if err == nil {
+		t.Error("Expected error when interpreter is no longer allowed, got nil")
+	}
+}
+
+func TestManager_CreateScript_WithSubdirectory(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	cfg := config.DefaultConfig()
+	cfg.Security.AllowScriptCreation = true
+	cfg.Security.ScriptCreationPath = tmpDir
+
+	manager, err := NewManager(cfg)
+	if err != nil {
+		t.Fatalf("NewManager() failed: %v", err)
+	}
+
+	// Create script with subdirectory in name
+	scriptContent := "#!/bin/bash\necho 'subdirectory script'"
+	err = manager.CreateScript("subdir/script.sh", scriptContent, "bash")
+	if err != nil {
+		t.Errorf("CreateScript() with subdirectory failed: %v", err)
+	}
+
+	// Verify file exists
+	createdPath := filepath.Join(tmpDir, "subdir", "script.sh")
+	if _, err := os.Stat(createdPath); err != nil {
+		t.Errorf("Created script file not found at subdirectory path: %v", err)
+	}
+}
+
+func TestManager_CreateScript_DirectoryCreationFailure(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	// Create a file where we want a directory
+	blockingFile := filepath.Join(tmpDir, "blocked")
+	if err := os.WriteFile(blockingFile, []byte("blocking"), 0640); err != nil {
+		t.Fatalf("Failed to create blocking file: %v", err)
+	}
+
+	cfg := config.DefaultConfig()
+	cfg.Security.AllowScriptCreation = true
+	cfg.Security.ScriptCreationPath = blockingFile // This is a file, not a directory
+
+	manager, err := NewManager(cfg)
+	if err != nil {
+		t.Fatalf("NewManager() failed: %v", err)
+	}
+
+	// Attempt to create script should fail
+	err = manager.CreateScript("script.sh", "#!/bin/bash\necho test", "bash")
+	if err == nil {
+		t.Error("Expected error when directory creation is blocked, got nil")
+	}
+}
+
+func TestManager_CreateScript_ReadOnlyDirectory(t *testing.T) {
+	tmpDir := t.TempDir()
+	readOnlyDir := filepath.Join(tmpDir, "readonly")
+
+	// Create directory
+	if err := os.MkdirAll(readOnlyDir, 0750); err != nil {
+		t.Fatalf("Failed to create readonly directory: %v", err)
+	}
+
+	// Make directory read-only
+	if err := os.Chmod(readOnlyDir, 0550); err != nil {
+		t.Fatalf("Failed to make directory read-only: %v", err)
+	}
+	defer os.Chmod(readOnlyDir, 0750) // Restore permissions for cleanup
+
+	cfg := config.DefaultConfig()
+	cfg.Security.AllowScriptCreation = true
+	cfg.Security.ScriptCreationPath = readOnlyDir
+
+	manager, err := NewManager(cfg)
+	if err != nil {
+		t.Fatalf("NewManager() failed: %v", err)
+	}
+
+	// Attempt to create script in read-only directory should fail
+	err = manager.CreateScript("test.sh", "#!/bin/bash\necho test", "bash")
+	if err == nil {
+		t.Error("Expected error when writing to read-only directory, got nil")
+	}
+}

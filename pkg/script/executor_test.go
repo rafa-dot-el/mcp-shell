@@ -444,3 +444,49 @@ func TestExecuteScript_NotFound(t *testing.T) {
 		t.Error("Expected error for nonexistent script, got nil")
 	}
 }
+
+func TestExecuteScript_ValidationFailure(t *testing.T) {
+	executor, tmpDir := setupTestExecutor(t)
+
+	// Create test script
+	scriptPath := filepath.Join(tmpDir, "test.sh")
+	if err := os.WriteFile(scriptPath, []byte("#!/bin/bash\necho test"), 0750); err != nil {
+		t.Fatalf("Failed to create test script: %v", err)
+	}
+
+	executor.manager.config.Scripts = []config.Script{
+		{
+			Name:        "test-script",
+			Path:        scriptPath,
+			Interpreter: "bash",
+			Parameters:  make(map[string]config.Parameter),
+		},
+	}
+
+	if err := executor.manager.Reload(); err != nil {
+		t.Fatalf("Failed to reload manager: %v", err)
+	}
+
+	// Delete the script file to cause validation failure
+	if err := os.Remove(scriptPath); err != nil {
+		t.Fatalf("Failed to delete script: %v", err)
+	}
+
+	// Execute should fail validation
+	req := &ExecutionRequest{
+		Name:       "test-script",
+		Parameters: make(map[string]string),
+		Timeout:    5 * time.Second,
+	}
+
+	ctx := context.Background()
+	_, err := executor.ExecuteScript(ctx, req)
+
+	if err == nil {
+		t.Error("Expected error when script validation fails, got nil")
+	}
+	if !strings.Contains(err.Error(), "validation failed") {
+		t.Errorf("Expected validation error, got: %v", err)
+	}
+}
+
