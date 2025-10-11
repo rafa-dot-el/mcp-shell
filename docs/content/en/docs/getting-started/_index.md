@@ -62,6 +62,121 @@ export MCP_SHELL_LOG_LEVEL="debug"
 export MCP_SHELL_CONFIG_FILE="/path/to/config.yaml"
 ```
 
+## Validating Configuration
+
+Before running the server, validate your configuration:
+
+```bash
+# Validate default configuration
+mcp-shell validate
+
+# Validate specific config file
+mcp-shell validate --config /path/to/config.yaml
+
+# Validate with detailed output
+mcp-shell validate --verbose
+```
+
+The `validate` command checks:
+- Configuration file syntax and structure
+- Script file existence and executable permissions
+- Parameter definitions and valid values
+- Alias command syntax
+- Log directory accessibility and permissions
+- MCP server configuration
+
+**Exit Codes:**
+- `0` - Configuration is valid
+- `1` - Validation errors found
+
+### Example Validation Output
+
+```bash
+$ mcp-shell validate
+[+] Configuration validation successful
+    Scripts: 3 valid
+    Aliases: 2 valid
+    Log directory: /var/log/mcp-shell
+    Max parallel jobs: 5
+```
+
+## Listing Scripts and Aliases
+
+View all configured scripts and aliases:
+
+```bash
+# List all in table format (default)
+mcp-shell list
+
+# List in JSON format (for programmatic use)
+mcp-shell list --format json
+
+# List in simple format (just names)
+mcp-shell list --format simple
+
+# List only scripts
+mcp-shell list --scripts
+
+# List only aliases
+mcp-shell list --aliases
+
+# Show detailed parameter information
+mcp-shell list --details
+```
+
+### Output Formats
+
+**Table Format** (default):
+```
+SCRIPTS
+--------------------------------------------------------------------------------
+NAME            DESCRIPTION                      PATH
+backup-db       Backup PostgreSQL database       /opt/scripts/backup.sh
+system-monitor  Monitor system resources         /opt/scripts/monitor.py
+
+ALIASES
+--------------------------------------------------------------------------------
+NAME            DESCRIPTION                      COMMAND
+git-status      Show git status                  git status -sb
+disk-usage      Show disk usage                  df -h
+```
+
+**JSON Format**:
+```json
+{
+  "scripts": [
+    {
+      "name": "backup-db",
+      "description": "Backup PostgreSQL database",
+      "path": "/opt/scripts/backup.sh",
+      "interpreter": "bash",
+      "parameters": {
+        "database": {
+          "description": "Database name",
+          "required": true,
+          "setter": "--db {}"
+        }
+      }
+    }
+  ],
+  "aliases": [
+    {
+      "name": "git-status",
+      "description": "Show git status",
+      "command": "git status -sb"
+    }
+  ]
+}
+```
+
+**Simple Format**:
+```
+backup-db
+system-monitor
+git-status
+disk-usage
+```
+
 ## Examples
 
 ### Basic Server
@@ -85,7 +200,22 @@ mcp-shell serve --config /path/to/config.yaml
 Run with verbose logging:
 
 ```bash
-mcp-shell serve --log-level debug
+mcp-shell serve --verbose --log-level debug
+```
+
+### Complete Workflow
+
+Typical workflow for starting the server:
+
+```bash
+# 1. Validate configuration
+mcp-shell validate
+
+# 2. Review available scripts and aliases
+mcp-shell list --details
+
+# 3. Start the server
+mcp-shell serve
 ```
 
 ## Security Considerations

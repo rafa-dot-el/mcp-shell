@@ -26,9 +26,36 @@ Want to contribute or extend MCP Shell?
 
 ## Key Features
 
+### Core Functionality
+- **Script Management**: Execute shell scripts with parameter validation and type checking
+- **Alias System**: Define simple command aliases for common operations
+- **Configuration Validation**: Built-in `validate` command checks configuration correctness
+- **Discovery & Listing**: `list` command shows all available scripts and aliases
+- **Multiple Output Formats**: Support for table, JSON, and simple list formats
+
+### Execution & Management
+- **Parallel Execution**: Control concurrent job execution with configurable limits
+- **Job Scheduling**: Cron-based scheduling and one-time scheduled execution
+- **Job Logging**: Comprehensive logging with log tailing and search capabilities
+- **Timeout Management**: Configurable execution timeouts per script
+- **Background Jobs**: Optional background execution support
+
+### Configuration & Security
+- **Hierarchical Configuration**: CLI flags > Environment vars > Config files > Defaults
+- **Security Controls**: Interpreter whitelist, script creation controls
+- **Flexible Configuration**: YAML-based configuration with validation
+- **Script Discovery**: Auto-discover scripts from folders using glob patterns
+
+### Platform & Distribution
 - **Cross-platform**: Works on Linux, macOS, Windows, and FreeBSD
-- **Secure**: Built with security best practices and vulnerability scanning
-- **Configurable**: Flexible configuration through multiple methods
+- **Container Ready**: Small, secure container images (scratch-based)
+- **Multiple Install Methods**: Nix, binary downloads, containers, source builds
+- **Comprehensive Testing**: >90% code coverage with unit, integration, and E2E tests
+
+### Development & Quality
+- **Security Scanning**: Built-in vulnerability and security analysis
+- **Quality Gates**: Automated linting, testing, and security checks
+- **Documentation**: Comprehensive documentation with examples
 - **Open Source**: Licensed under GPL-3.0 with full source code available
 
 ## Need Help?
