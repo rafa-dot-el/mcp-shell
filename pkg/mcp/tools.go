@@ -25,7 +25,6 @@ import (
 	"time"
 
 	"github.com/rafa-dot-el/mcp-shell/pkg/job"
-	"github.com/rafa-dot-el/mcp-shell/pkg/script"
 )
 
 // ToolHandler handles MCP tool requests
