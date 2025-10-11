@@ -326,3 +326,484 @@ func TestValidateScripts(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateScriptFolders(t *testing.T) {
+	tests := []struct {
+		name      string
+		folders   []ScriptFolder
+		wantError bool
+	}{
+		{
+			name: "valid script folder",
+			folders: []ScriptFolder{
+				{
+					Name:               "test-folder",
+					Description:        "Test folder",
+					Path:               "/tmp/*.sh",
+					DefaultInterpreter: "bash",
+				},
+			},
+			wantError: false,
+		},
+		{
+			name: "empty folder name",
+			folders: []ScriptFolder{
+				{
+					Name:        "",
+					Description: "Test",
+					Path:        "/tmp/*.sh",
+				},
+			},
+			wantError: true,
+		},
+		{
+			name: "duplicate folder names",
+			folders: []ScriptFolder{
+				{Name: "test", Path: "/tmp/*.sh"},
+				{Name: "test", Path: "/opt/*.sh"},
+			},
+			wantError: true,
+		},
+		{
+			name: "empty path",
+			folders: []ScriptFolder{
+				{Name: "test", Path: ""},
+			},
+			wantError: true,
+		},
+		{
+			name: "disallowed interpreter",
+			folders: []ScriptFolder{
+				{
+					Name:               "test",
+					Path:               "/tmp/*.sh",
+					DefaultInterpreter: "invalid-interpreter",
+				},
+			},
+			wantError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := DefaultConfig()
+			config.ScriptFolders = tt.folders
+
+			errors := config.Validate()
+			hasError := len(errors) > 0
+
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
+			}
+		})
+	}
+}
+
+func TestValidateExecution(t *testing.T) {
+	tests := []struct {
+		name      string
+		execution ExecutionConfig
+		wantError bool
+	}{
+		{
+			name: "valid execution config",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 5,
+				DefaultTimeout:  300,
+				LogDirectory:    "/var/log/mcp-shell",
+				AllowBackground: true,
+			},
+			wantError: false,
+		},
+		{
+			name: "invalid max parallel jobs (zero)",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 0,
+				DefaultTimeout:  300,
+				LogDirectory:    "/var/log/mcp-shell",
+			},
+			wantError: true,
+		},
+		{
+			name: "invalid max parallel jobs (negative)",
+			execution: ExecutionConfig{
+				MaxParallelJobs: -1,
+				DefaultTimeout:  300,
+				LogDirectory:    "/var/log/mcp-shell",
+			},
+			wantError: true,
+		},
+		{
+			name: "invalid default timeout (zero)",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 5,
+				DefaultTimeout:  0,
+				LogDirectory:    "/var/log/mcp-shell",
+			},
+			wantError: true,
+		},
+		{
+			name: "invalid default timeout (negative)",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 5,
+				DefaultTimeout:  -1,
+				LogDirectory:    "/var/log/mcp-shell",
+			},
+			wantError: true,
+		},
+		{
+			name: "empty log directory",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 5,
+				DefaultTimeout:  300,
+				LogDirectory:    "",
+			},
+			wantError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := DefaultConfig()
+			config.Execution = tt.execution
+
+			errors := config.Validate()
+			hasError := len(errors) > 0
+
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
+			}
+		})
+	}
+}
+
+func TestValidateSecurity(t *testing.T) {
+	tests := []struct {
+		name      string
+		security  SecurityConfig
+		wantError bool
+	}{
+		{
+			name: "valid security config",
+			security: SecurityConfig{
+				AllowScriptCreation: false,
+				AllowedInterpreters: []string{"bash", "python3"},
+				ScriptCreationPath:  "scripts/",
+			},
+			wantError: false,
+		},
+		{
+			name: "empty allowed interpreters",
+			security: SecurityConfig{
+				AllowScriptCreation: false,
+				AllowedInterpreters: []string{},
+			},
+			wantError: true,
+		},
+		{
+			name: "script creation enabled without path",
+			security: SecurityConfig{
+				AllowScriptCreation: true,
+				AllowedInterpreters: []string{"bash"},
+				ScriptCreationPath:  "",
+			},
+			wantError: true,
+		},
+		{
+			name: "script creation enabled with path",
+			security: SecurityConfig{
+				AllowScriptCreation: true,
+				AllowedInterpreters: []string{"bash"},
+				ScriptCreationPath:  "/tmp/scripts/",
+			},
+			wantError: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := DefaultConfig()
+			config.Security = tt.security
+
+			errors := config.Validate()
+			hasError := len(errors) > 0
+
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
+			}
+		})
+	}
+}
+
+func TestValidateLogging(t *testing.T) {
+	tests := []struct {
+		name      string
+		logging   LoggingConfig
+		wantError bool
+	}{
+		{
+			name:      "valid text format",
+			logging:   LoggingConfig{Level: "info", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "valid json format",
+			logging:   LoggingConfig{Level: "debug", Format: "json"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - trace",
+			logging:   LoggingConfig{Level: "trace", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - warn",
+			logging:   LoggingConfig{Level: "warn", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - error",
+			logging:   LoggingConfig{Level: "error", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - fatal",
+			logging:   LoggingConfig{Level: "fatal", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - panic",
+			logging:   LoggingConfig{Level: "panic", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "case insensitive level",
+			logging:   LoggingConfig{Level: "INFO", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "case insensitive format",
+			logging:   LoggingConfig{Level: "info", Format: "JSON"},
+			wantError: false,
+		},
+		{
+			name:      "invalid log level",
+			logging:   LoggingConfig{Level: "invalid", Format: "text"},
+			wantError: true,
+		},
+		{
+			name:      "invalid log format",
+			logging:   LoggingConfig{Level: "info", Format: "invalid"},
+			wantError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := DefaultConfig()
+			config.Logging = tt.logging
+
+			errors := config.Validate()
+			hasError := len(errors) > 0
+
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
+			}
+		})
+	}
+}
+
+func TestValidationError(t *testing.T) {
+	tests := []struct {
+		name     string
+		err      *ValidationError
+		expected string
+	}{
+		{
+			name: "basic error",
+			err: &ValidationError{
+				Field:   "test.field",
+				Value:   "value",
+				Message: "test message",
+			},
+			expected: "validation error for field 'test.field' (value: value): test message",
+		},
+		{
+			name: "numeric value",
+			err: &ValidationError{
+				Field:   "config.timeout",
+				Value:   0,
+				Message: "must be positive",
+			},
+			expected: "validation error for field 'config.timeout' (value: 0): must be positive",
+		},
+		{
+			name: "nil value",
+			err: &ValidationError{
+				Field:   "config.value",
+				Value:   nil,
+				Message: "cannot be nil",
+			},
+			expected: "validation error for field 'config.value' (value: <nil>): cannot be nil",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.err.Error(); got != tt.expected {
+				t.Errorf("ValidationError.Error() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestGetConfigDir(t *testing.T) {
+	dir, err := GetConfigDir()
+	if err != nil {
+		t.Fatalf("GetConfigDir() error = %v", err)
+	}
+
+	if dir == "" {
+		t.Error("GetConfigDir() returned empty string")
+	}
+
+	// Should end with .config/mcp-shell
+	expectedSuffix := ".config/mcp-shell"
+	if len(dir) < len(expectedSuffix) {
+		t.Errorf("GetConfigDir() path too short: %s", dir)
+	}
+}
+
+func TestEnsureConfigDir(t *testing.T) {
+	// This test might create directories
+	err := EnsureConfigDir()
+	if err != nil {
+		t.Errorf("EnsureConfigDir() error = %v", err)
+	}
+
+	// Verify the directory path is returned correctly
+	dir, err := GetConfigDir()
+	if err != nil {
+		t.Fatalf("GetConfigDir() error = %v", err)
+	}
+
+	if dir == "" {
+		t.Error("Config directory is empty after EnsureConfigDir()")
+	}
+}
+
+func TestIsValid(t *testing.T) {
+	tests := []struct {
+		name  string
+		cfg   *Config
+		valid bool
+	}{
+		{
+			name:  "default config is valid",
+			cfg:   DefaultConfig(),
+			valid: true,
+		},
+		{
+			name: "config with empty MCP name",
+			cfg: &Config{
+				MCP: MCPConfig{
+					Name:      "",
+					Version:   "1.0.0",
+					Transport: "stdio",
+				},
+				Execution: ExecutionConfig{
+					MaxParallelJobs: 5,
+					DefaultTimeout:  300,
+					LogDirectory:    "/tmp",
+				},
+				Security: SecurityConfig{
+					AllowedInterpreters: []string{"bash"},
+				},
+				Logging: LoggingConfig{
+					Level:  "info",
+					Format: "text",
+				},
+			},
+			valid: false,
+		},
+		{
+			name: "config with multiple validation errors",
+			cfg: &Config{
+				MCP: MCPConfig{
+					Name:      "",
+					Version:   "",
+					Transport: "invalid",
+				},
+				Execution: ExecutionConfig{
+					MaxParallelJobs: 0,
+					DefaultTimeout:  0,
+					LogDirectory:    "",
+				},
+				Security: SecurityConfig{
+					AllowedInterpreters: []string{},
+				},
+				Logging: LoggingConfig{
+					Level:  "invalid",
+					Format: "invalid",
+				},
+			},
+			valid: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.cfg.IsValid(); got != tt.valid {
+				t.Errorf("IsValid() = %v, want %v, errors: %v", got, tt.valid, tt.cfg.Validate())
+			}
+		})
+	}
+}
+
+func TestContains(t *testing.T) {
+	tests := []struct {
+		name  string
+		slice []string
+		item  string
+		want  bool
+	}{
+		{
+			name:  "item exists",
+			slice: []string{"bash", "python3", "perl"},
+			item:  "bash",
+			want:  true,
+		},
+		{
+			name:  "item exists case insensitive",
+			slice: []string{"bash", "python3", "perl"},
+			item:  "BASH",
+			want:  true,
+		},
+		{
+			name:  "item does not exist",
+			slice: []string{"bash", "python3", "perl"},
+			item:  "ruby",
+			want:  false,
+		},
+		{
+			name:  "empty slice",
+			slice: []string{},
+			item:  "bash",
+			want:  false,
+		},
+		{
+			name:  "empty item",
+			slice: []string{"bash", "python3"},
+			item:  "",
+			want:  false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := contains(tt.slice, tt.item); got != tt.want {
+				t.Errorf("contains() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
