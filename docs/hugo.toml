@@ -82,7 +82,7 @@ time_format_blog = "2006-01-02"
 
   # Syntax highlighting
   [markup.highlight]
-    style = "github"
+    style = "monokai"
     lineNos = false
     lineNumbersInTable = false
     tabWidth = 2
