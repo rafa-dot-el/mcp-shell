@@ -52,7 +52,7 @@ exit 0
 execution:
   log_directory: "%s"
   max_parallel_jobs: 5
-  default_timeout: "1h"
+  default_timeout: 3600
 
 scripts:
   - name: "test-script"
@@ -83,7 +83,7 @@ logging:
 execution:
   log_directory: "%s"
   max_parallel_jobs: 5
-  default_timeout: "1h"
+  default_timeout: 3600
 
 scripts: []
 aliases: []
@@ -104,14 +104,8 @@ logging:
 		t.Fatalf("Failed to write config: %v", err)
 	}
 
-	// Reset viper
+	// Reset viper for clean state
 	viper.Reset()
-
-	// Set config file
-	viper.SetConfigFile(configPath)
-	if err := viper.ReadInConfig(); err != nil {
-		t.Fatalf("Failed to read config: %v", err)
-	}
 
 	return tmpDir
 }
@@ -119,6 +113,8 @@ logging:
 func TestValidateCommand(t *testing.T) {
 	tmpDir := setupTestValidateConfig(t, true)
 	defer os.RemoveAll(tmpDir)
+
+	configPath := filepath.Join(tmpDir, "config.yaml")
 
 	// Capture output
 	oldStdout := os.Stdout
@@ -128,8 +124,8 @@ func TestValidateCommand(t *testing.T) {
 	os.Stderr = w
 
 	// Run validate command
-	validateCmd.SetArgs([]string{})
-	err := validateCmd.Execute()
+	rootCmd.SetArgs([]string{"validate", "--config", configPath})
+	err := rootCmd.Execute()
 
 	// Restore output
 	w.Close()
@@ -137,7 +133,7 @@ func TestValidateCommand(t *testing.T) {
 	os.Stderr = oldStderr
 
 	if err != nil {
-		t.Errorf("validateCmd.Execute() failed: %v", err)
+		t.Errorf("rootCmd.Execute() failed: %v", err)
 	}
 
 	// Read captured output
@@ -154,12 +150,14 @@ func TestValidateCommand_EmptyConfig(t *testing.T) {
 	tmpDir := setupTestValidateConfig(t, false)
 	defer os.RemoveAll(tmpDir)
 
+	configPath := filepath.Join(tmpDir, "config.yaml")
+
 	// Run validate command
-	validateCmd.SetArgs([]string{})
-	err := validateCmd.Execute()
+	rootCmd.SetArgs([]string{"validate", "--config", configPath})
+	err := rootCmd.Execute()
 
 	if err != nil {
-		t.Errorf("validateCmd.Execute() should not fail with empty config: %v", err)
+		t.Errorf("rootCmd.Execute() should not fail with empty config: %v", err)
 	}
 }
 
@@ -175,7 +173,7 @@ func TestValidateCommand_MissingScript(t *testing.T) {
 execution:
   log_directory: "%s"
   max_parallel_jobs: 5
-  default_timeout: "1h"
+  default_timeout: 3600
 
 scripts:
   - name: "missing-script"
@@ -201,16 +199,12 @@ logging:
 		t.Fatalf("Failed to write config: %v", err)
 	}
 
-	// Reset viper
+	// Reset viper for clean state
 	viper.Reset()
-	viper.SetConfigFile(configPath)
-	if err := viper.ReadInConfig(); err != nil {
-		t.Fatalf("Failed to read config: %v", err)
-	}
 
 	// Run validate command - should fail
-	validateCmd.SetArgs([]string{})
-	err := validateCmd.Execute()
+	rootCmd.SetArgs([]string{"validate", "--config", configPath})
+	err := rootCmd.Execute()
 
 	if err == nil {
 		t.Error("Expected validation to fail with missing script")
@@ -234,7 +228,7 @@ func TestValidateCommand_NonExecutableScript(t *testing.T) {
 execution:
   log_directory: "%s"
   max_parallel_jobs: 5
-  default_timeout: "1h"
+  default_timeout: 3600
 
 scripts:
   - name: "nonexec-script"
@@ -260,16 +254,12 @@ logging:
 		t.Fatalf("Failed to write config: %v", err)
 	}
 
-	// Reset viper
+	// Reset viper for clean state
 	viper.Reset()
-	viper.SetConfigFile(configPath)
-	if err := viper.ReadInConfig(); err != nil {
-		t.Fatalf("Failed to read config: %v", err)
-	}
 
 	// Run validate command - should fail
-	validateCmd.SetArgs([]string{})
-	err := validateCmd.Execute()
+	rootCmd.SetArgs([]string{"validate", "--config", configPath})
+	err := rootCmd.Execute()
 
 	if err == nil {
 		t.Error("Expected validation to fail with non-executable script")
@@ -288,7 +278,7 @@ func TestValidateCommand_LogDirectoryCreation(t *testing.T) {
 execution:
   log_directory: "%s"
   max_parallel_jobs: 5
-  default_timeout: "1h"
+  default_timeout: 3600
 
 scripts: []
 aliases: []
@@ -308,19 +298,15 @@ logging:
 		t.Fatalf("Failed to write config: %v", err)
 	}
 
-	// Reset viper
+	// Reset viper for clean state
 	viper.Reset()
-	viper.SetConfigFile(configPath)
-	if err := viper.ReadInConfig(); err != nil {
-		t.Fatalf("Failed to read config: %v", err)
-	}
 
 	// Run validate command
-	validateCmd.SetArgs([]string{})
-	err := validateCmd.Execute()
+	rootCmd.SetArgs([]string{"validate", "--config", configPath})
+	err := rootCmd.Execute()
 
 	if err != nil {
-		t.Errorf("validateCmd.Execute() failed: %v", err)
+		t.Errorf("rootCmd.Execute() failed: %v", err)
 	}
 
 	// Check if log directory was created
