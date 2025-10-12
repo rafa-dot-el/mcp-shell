@@ -3,9 +3,6 @@ title: "Tutorials"
 linkTitle: "Tutorials"
 weight: 30
 type: docs
-menu:
-  main:
-    weight: 15
 cascade:
   - type: "docs"
 ---
@@ -20,6 +17,13 @@ Perfect for beginners just starting with MCP Shell:
 
 * [Basic Usage](/tutorials/basic-usage/): Your first steps with MCP Shell
 * [Configuration Basics](/tutorials/configuration-basics/): Setting up your environment
+
+## Integration Tutorials
+
+Learn how to integrate MCP Shell with AI assistants:
+
+* [Claude Desktop](/tutorials/claude-desktop/): Configure Claude Desktop to use MCP Shell
+* [Google Gemini](/tutorials/gemini/): Integrate MCP Shell with Google Gemini API
 
 ## Advanced Tutorials
 
