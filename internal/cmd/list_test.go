@@ -124,7 +124,7 @@ func captureOutput(f func()) string {
 	// Start goroutine to read from pipe
 	go func() {
 		buf := new(bytes.Buffer)
-		buf.ReadFrom(r)
+		_, _ = buf.ReadFrom(r)
 		outChan <- buf.String()
 	}()
 
@@ -132,11 +132,11 @@ func captureOutput(f func()) string {
 	f()
 
 	// Close writer to signal EOF
-	w.Close()
+	_ = w.Close()
 
 	// Wait for reader to finish and get output
 	output := <-outChan
-	r.Close()
+	_ = r.Close()
 
 	return output
 }
@@ -144,18 +144,18 @@ func captureOutput(f func()) string {
 // resetCfgFile resets the package-level cfgFile variable
 func resetCfgFile() {
 	// Access the package-level cfgFile by parsing it through the flag
-	rootCmd.PersistentFlags().Set("config", "")
+	_ = rootCmd.PersistentFlags().Set("config", "")
 
 	// Reset listCmd flags to default values
-	listCmd.Flags().Set("format", "table")
-	listCmd.Flags().Set("scripts", "false")
-	listCmd.Flags().Set("aliases", "false")
-	listCmd.Flags().Set("details", "false")
+	_ = listCmd.Flags().Set("format", "table")
+	_ = listCmd.Flags().Set("scripts", "false")
+	_ = listCmd.Flags().Set("aliases", "false")
+	_ = listCmd.Flags().Set("details", "false")
 }
 
 func TestListCommand_TableFormat(t *testing.T) {
 	tmpDir := setupTestListConfig(t)
-	defer os.RemoveAll(tmpDir)
+	_ = tmpDir // TempDir automatically cleaned up by testing framework
 
 	configPath := filepath.Join(tmpDir, "config.yaml")
 	output := captureOutput(func() {
@@ -184,7 +184,7 @@ func TestListCommand_TableFormat(t *testing.T) {
 
 func TestListCommand_JSONFormat(t *testing.T) {
 	tmpDir := setupTestListConfig(t)
-	defer os.RemoveAll(tmpDir)
+	_ = tmpDir // TempDir automatically cleaned up by testing framework
 
 	configPath := filepath.Join(tmpDir, "config.yaml")
 	output := captureOutput(func() {
@@ -221,7 +221,7 @@ func TestListCommand_JSONFormat(t *testing.T) {
 
 func TestListCommand_SimpleFormat(t *testing.T) {
 	tmpDir := setupTestListConfig(t)
-	defer os.RemoveAll(tmpDir)
+	_ = tmpDir // TempDir automatically cleaned up by testing framework
 
 	configPath := filepath.Join(tmpDir, "config.yaml")
 	output := captureOutput(func() {
@@ -247,7 +247,7 @@ func TestListCommand_SimpleFormat(t *testing.T) {
 
 func TestListCommand_ScriptsOnly(t *testing.T) {
 	tmpDir := setupTestListConfig(t)
-	defer os.RemoveAll(tmpDir)
+	_ = tmpDir // TempDir automatically cleaned up by testing framework
 
 	configPath := filepath.Join(tmpDir, "config.yaml")
 	output := captureOutput(func() {
@@ -268,7 +268,7 @@ func TestListCommand_ScriptsOnly(t *testing.T) {
 
 func TestListCommand_AliasesOnly(t *testing.T) {
 	tmpDir := setupTestListConfig(t)
-	defer os.RemoveAll(tmpDir)
+	_ = tmpDir // TempDir automatically cleaned up by testing framework
 
 	configPath := filepath.Join(tmpDir, "config.yaml")
 	t.Logf("Config path: %s", configPath)
@@ -301,7 +301,7 @@ func TestListCommand_AliasesOnly(t *testing.T) {
 
 func TestListCommand_WithDetails(t *testing.T) {
 	tmpDir := setupTestListConfig(t)
-	defer os.RemoveAll(tmpDir)
+	_ = tmpDir // TempDir automatically cleaned up by testing framework
 
 	configPath := filepath.Join(tmpDir, "config.yaml")
 	output := captureOutput(func() {

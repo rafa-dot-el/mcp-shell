@@ -112,7 +112,7 @@ logging:
 
 func TestValidateCommand(t *testing.T) {
 	tmpDir := setupTestValidateConfig(t, true)
-	defer os.RemoveAll(tmpDir)
+	_ = tmpDir // TempDir automatically cleaned up by testing framework
 
 	configPath := filepath.Join(tmpDir, "config.yaml")
 
@@ -128,7 +128,7 @@ func TestValidateCommand(t *testing.T) {
 	err := rootCmd.Execute()
 
 	// Restore output
-	w.Close()
+	_ = w.Close()
 	os.Stdout = oldStdout
 	os.Stderr = oldStderr
 
@@ -138,7 +138,7 @@ func TestValidateCommand(t *testing.T) {
 
 	// Read captured output
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(r)
+	_, _ = buf.ReadFrom(r)
 	output := buf.String()
 
 	if output == "" {
@@ -148,7 +148,7 @@ func TestValidateCommand(t *testing.T) {
 
 func TestValidateCommand_EmptyConfig(t *testing.T) {
 	tmpDir := setupTestValidateConfig(t, false)
-	defer os.RemoveAll(tmpDir)
+	_ = tmpDir // TempDir automatically cleaned up by testing framework
 
 	configPath := filepath.Join(tmpDir, "config.yaml")
 
