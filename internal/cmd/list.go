@@ -62,8 +62,9 @@ Examples:
   # List with detailed parameter information
   mcp-shell list --details`,
 
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(cmd *cobra.Command, _ []string) error {
 		format := cmd.Flag("format").Value.String()
+		//nolint:goconst // Standard flag value comparisons
 		scriptsOnly := cmd.Flag("scripts").Value.String() == "true"
 		aliasesOnly := cmd.Flag("aliases").Value.String() == "true"
 		details := cmd.Flag("details").Value.String() == "true"
@@ -148,9 +149,9 @@ func printTable(scripts []*script.LoadedScript, aliases []*config.Alias, scripts
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
 
 	if !aliasesOnly && len(scripts) > 0 {
-		fmt.Fprintln(w, "SCRIPTS")
-		fmt.Fprintln(w, strings.Repeat("-", 80))
-		fmt.Fprintln(w, "NAME\tDESCRIPTION\tPATH")
+		_, _ = fmt.Fprintln(w, "SCRIPTS")
+		_, _ = fmt.Fprintln(w, strings.Repeat("-", 80))
+		_, _ = fmt.Fprintln(w, "NAME\tDESCRIPTION\tPATH")
 
 		for _, s := range scripts {
 			desc := s.Config.Description
@@ -161,10 +162,10 @@ func printTable(scripts []*script.LoadedScript, aliases []*config.Alias, scripts
 			if len(path) > 40 {
 				path = "..." + path[len(path)-37:]
 			}
-			fmt.Fprintf(w, "%s\t%s\t%s\n", s.Config.Name, desc, path)
+			_, _ = fmt.Fprintf(w, "%s\t%s\t%s\n", s.Config.Name, desc, path)
 
 			if details && len(s.Config.Parameters) > 0 {
-				fmt.Fprintln(w, "\tParameters:")
+				_, _ = fmt.Fprintln(w, "\tParameters:")
 				for name, param := range s.Config.Parameters {
 					required := ""
 					if param.Required {
@@ -174,17 +175,17 @@ func printTable(scripts []*script.LoadedScript, aliases []*config.Alias, scripts
 					if param.Default != "" {
 						defaultVal = fmt.Sprintf(" [default: %s]", param.Default)
 					}
-					fmt.Fprintf(w, "\t  %s%s%s - %s\n", name, required, defaultVal, param.Description)
+					_, _ = fmt.Fprintf(w, "\t  %s%s%s - %s\n", name, required, defaultVal, param.Description)
 				}
 			}
 		}
-		fmt.Fprintln(w)
+		_, _ = fmt.Fprintln(w)
 	}
 
 	if !scriptsOnly && len(aliases) > 0 {
-		fmt.Fprintln(w, "ALIASES")
-		fmt.Fprintln(w, strings.Repeat("-", 80))
-		fmt.Fprintln(w, "NAME\tDESCRIPTION\tCOMMAND")
+		_, _ = fmt.Fprintln(w, "ALIASES")
+		_, _ = fmt.Fprintln(w, strings.Repeat("-", 80))
+		_, _ = fmt.Fprintln(w, "NAME\tDESCRIPTION\tCOMMAND")
 
 		for _, a := range aliases {
 			desc := a.Description
@@ -195,9 +196,9 @@ func printTable(scripts []*script.LoadedScript, aliases []*config.Alias, scripts
 			if len(command) > 40 {
 				command = command[:37] + "..."
 			}
-			fmt.Fprintf(w, "%s\t%s\t%s\n", a.Name, desc, command)
+			_, _ = fmt.Fprintf(w, "%s\t%s\t%s\n", a.Name, desc, command)
 		}
-		fmt.Fprintln(w)
+		_, _ = fmt.Fprintln(w)
 	}
 
 	return w.Flush()

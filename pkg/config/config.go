@@ -526,7 +526,7 @@ func (c *Config) validateLogging() []error {
 // contains checks if a string is in a slice
 func contains(slice []string, item string) bool {
 	for _, s := range slice {
-		if strings.ToLower(s) == strings.ToLower(item) {
+		if strings.EqualFold(s, item) {
 			return true
 		}
 	}

@@ -33,8 +33,11 @@ import (
 )
 
 // JobStatus represents the current state of a job
+//
+//nolint:revive // JobStatus is an established API name, changing would break compatibility
 type JobStatus string
 
+//nolint:revive // Const names are self-documenting
 const (
 	StatusPending   JobStatus = "pending"
 	StatusRunning   JobStatus = "running"
@@ -102,6 +105,7 @@ type Manager struct {
 	// Execution control
 	maxParallel int
 	executing   chan struct{}
+	trigger     chan struct{} // signals when queue should be processed
 
 	// Shutdown control
 	shutdown chan struct{}
@@ -131,6 +135,7 @@ func NewManager(cfg *config.Config, executor *script.Executor) (*Manager, error)
 		completed:   make([]*Job, 0),
 		maxParallel: cfg.Execution.MaxParallelJobs,
 		executing:   make(chan struct{}, cfg.Execution.MaxParallelJobs),
+		trigger:     make(chan struct{}, 1), // buffered to prevent blocking
 		shutdown:    make(chan struct{}),
 	}
 
@@ -185,6 +190,12 @@ func (m *Manager) Enqueue(name string, isAlias bool, parameters map[string]strin
 	m.queue = append(m.queue, job)
 	m.queueMu.Unlock()
 
+	// Trigger queue processing (non-blocking)
+	select {
+	case m.trigger <- struct{}{}:
+	default:
+	}
+
 	return job, nil
 }
 
@@ -212,14 +223,11 @@ func (m *Manager) Execute(ctx context.Context, name string, isAlias bool, parame
 func (m *Manager) processQueue() {
 	defer m.wg.Done()
 
-	ticker := time.NewTicker(100 * time.Millisecond)
-	defer ticker.Stop()
-
 	for {
 		select {
 		case <-m.shutdown:
 			return
-		case <-ticker.C:
+		case <-m.trigger:
 			m.processNextJob()
 		}
 	}
@@ -280,7 +288,7 @@ func (m *Manager) executeJob(job *Job) {
 		m.completeJob(job)
 		return
 	}
-	defer logFile.Close()
+	defer func() { _ = logFile.Close() }()
 
 	// Execute script or alias
 	var result *script.ExecutionResult
@@ -297,28 +305,29 @@ func (m *Manager) executeJob(job *Job) {
 
 	// Write output to log file
 	if result != nil {
-		fmt.Fprintf(logFile, "=== Job %s ===\n", job.ID)
-		fmt.Fprintf(logFile, "Name: %s\n", job.Name)
-		fmt.Fprintf(logFile, "Started: %s\n", job.StartedAt.Format(time.RFC3339))
-		fmt.Fprintf(logFile, "\n=== STDOUT ===\n%s\n", result.Stdout)
+		_, _ = fmt.Fprintf(logFile, "=== Job %s ===\n", job.ID)
+		_, _ = fmt.Fprintf(logFile, "Name: %s\n", job.Name)
+		_, _ = fmt.Fprintf(logFile, "Started: %s\n", job.StartedAt.Format(time.RFC3339))
+		_, _ = fmt.Fprintf(logFile, "\n=== STDOUT ===\n%s\n", result.Stdout)
 		if result.Stderr != "" {
-			fmt.Fprintf(logFile, "\n=== STDERR ===\n%s\n", result.Stderr)
+			_, _ = fmt.Fprintf(logFile, "\n=== STDERR ===\n%s\n", result.Stderr)
 		}
-		fmt.Fprintf(logFile, "\n=== EXIT CODE ===\n%d\n", result.ExitCode)
-		fmt.Fprintf(logFile, "\n=== DURATION ===\n%s\n", result.Duration)
+		_, _ = fmt.Fprintf(logFile, "\n=== EXIT CODE ===\n%d\n", result.ExitCode)
+		_, _ = fmt.Fprintf(logFile, "\n=== DURATION ===\n%s\n", result.Duration)
 
 		job.Duration = result.Duration
 		job.ExitCode = result.ExitCode
 	}
 
 	// Update job status
+	//nolint:gocritic // if-else chain is clearer for error handling than switch
 	if err != nil {
 		job.Error = err
 		job.Status = StatusFailed
-		fmt.Fprintf(logFile, "\n=== ERROR ===\n%s\n", err)
+		_, _ = fmt.Fprintf(logFile, "\n=== ERROR ===\n%s\n", err)
 	} else if job.ctx.Err() == context.Canceled {
 		job.Status = StatusCancelled
-		fmt.Fprintf(logFile, "\n=== CANCELLED ===\n")
+		_, _ = fmt.Fprintf(logFile, "\n=== CANCELLED ===\n")
 	} else {
 		job.Status = StatusCompleted
 	}
@@ -340,6 +349,12 @@ func (m *Manager) completeJob(job *Job) {
 	m.completedMu.Lock()
 	m.completed = append(m.completed, job)
 	m.completedMu.Unlock()
+
+	// Trigger queue processing for next job (non-blocking)
+	select {
+	case m.trigger <- struct{}{}:
+	default:
+	}
 }
 
 // GetJob retrieves a job by ID (checks queue, running, and completed)

@@ -69,16 +69,8 @@ func TestNewServer(t *testing.T) {
 		t.Error("Server scheduler is nil")
 	}
 
-	if server.resources == nil {
-		t.Error("Server resource handler is nil")
-	}
-
-	if server.prompts == nil {
-		t.Error("Server prompt handler is nil")
-	}
-
-	if server.tools == nil {
-		t.Error("Server tool handler is nil")
+	if server.mcpServer == nil {
+		t.Error("Server mcpServer is nil")
 	}
 
 	// Cleanup
@@ -126,7 +118,7 @@ func TestServer_GetServerInfo(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		server.Shutdown(ctx)
+		_ = server.Shutdown(ctx)
 	}()
 
 	info := server.GetServerInfo()

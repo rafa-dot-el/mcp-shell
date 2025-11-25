@@ -52,8 +52,8 @@ Examples:
   # Validate with verbose output
   mcp-shell validate --verbose`,
 
-	RunE: func(cmd *cobra.Command, args []string) error {
-		verbose := cmd.Flag("verbose").Value.String() == "true"
+	RunE: func(cmd *cobra.Command, _ []string) error {
+		verbose := cmd.Flag("verbose").Value.String() == "true" //nolint:goconst // Standard flag value comparison
 
 		if verbose {
 			fmt.Fprintln(os.Stderr, "[*] Loading configuration...")
@@ -139,7 +139,7 @@ Examples:
 		if err != nil {
 			if os.IsNotExist(err) {
 				// Try to create it
-				if err := os.MkdirAll(cfg.Execution.LogDirectory, 0755); err != nil {
+				if err := os.MkdirAll(cfg.Execution.LogDirectory, 0750); err != nil {
 					fmt.Fprintf(os.Stderr, "[-] Cannot create log directory: %v\n", err)
 					return fmt.Errorf("log directory validation failed: %w", err)
 				}

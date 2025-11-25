@@ -19,10 +19,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/rafa-dot-el/mcp-shell/pkg/config"
 	"github.com/rafa-dot-el/mcp-shell/pkg/mcp"
@@ -56,7 +58,7 @@ Examples:
   # Start server with verbose output (to stderr)
   mcp-shell serve --verbose`,
 
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, _ []string) error {
 		// Load configuration
 		cfg, err := loadConfig()
 		if err != nil {
@@ -64,13 +66,10 @@ Examples:
 		}
 
 		// Create MCP server
-		server, err := mcp.NewServer(cfg)
+		mcpServer, err := mcp.NewServer(cfg)
 		if err != nil {
 			return fmt.Errorf("failed to create MCP server: %w", err)
 		}
-
-		// Create stdio transport
-		transport := mcp.NewStdioTransport(server)
 
 		// Setup signal handling for graceful shutdown
 		sigChan := make(chan os.Signal, 1)
@@ -82,7 +81,7 @@ Examples:
 			if viper.GetBool("verbose") {
 				fmt.Fprintln(os.Stderr, "[*] MCP server starting in stdio mode")
 			}
-			errChan <- transport.Serve()
+			errChan <- mcpServer.Serve()
 		}()
 
 		// Wait for shutdown signal or error
@@ -92,7 +91,9 @@ Examples:
 				fmt.Fprintf(os.Stderr, "[*] Received signal: %v\n", sig)
 				fmt.Fprintln(os.Stderr, "[*] Shutting down gracefully...")
 			}
-			if err := transport.Shutdown(); err != nil {
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			if err := mcpServer.Shutdown(ctx); err != nil {
 				return fmt.Errorf("shutdown error: %w", err)
 			}
 			return nil
@@ -113,8 +114,8 @@ func init() {
 	serveCmd.Flags().Int("max-jobs", 0, "Maximum parallel jobs (overrides config, 0 uses config default)")
 
 	// Bind flags to viper
-	viper.BindPFlag("execution.log_directory", serveCmd.Flags().Lookup("log-dir"))
-	viper.BindPFlag("execution.max_parallel_jobs", serveCmd.Flags().Lookup("max-jobs"))
+	_ = viper.BindPFlag("execution.log_directory", serveCmd.Flags().Lookup("log-dir"))
+	_ = viper.BindPFlag("execution.max_parallel_jobs", serveCmd.Flags().Lookup("max-jobs"))
 }
 
 // loadConfig loads the configuration from viper

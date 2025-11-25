@@ -53,7 +53,7 @@ func (m *Manager) TailLog(jobID string, opts TailOptions) ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open log file: %w", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// Read all lines
 	var lines []string
@@ -126,7 +126,7 @@ func (m *Manager) SearchLog(jobID string, pattern string) ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open log file: %w", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	// Compile regex
 	re, err := regexp.Compile(pattern)
@@ -172,7 +172,7 @@ func (m *Manager) GetLogStats(jobID string) (*LogStats, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open log file: %w", err)
 	}
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	var lineCount, wordCount, charCount int
 	scanner := bufio.NewScanner(file)
@@ -189,12 +189,12 @@ func (m *Manager) GetLogStats(jobID string) (*LogStats, error) {
 	}
 
 	return &LogStats{
-		Path:      job.LogPath,
-		Size:      fileInfo.Size(),
-		Lines:     lineCount,
-		Words:     wordCount,
+		Path:       job.LogPath,
+		Size:       fileInfo.Size(),
+		Lines:      lineCount,
+		Words:      wordCount,
 		Characters: charCount,
-		Modified:  fileInfo.ModTime(),
+		Modified:   fileInfo.ModTime(),
 	}, nil
 }
 

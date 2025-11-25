@@ -5,11 +5,11 @@
 # These helpers are for development convenience only - CI/CD must not depend on them.
 
 # Project-specific aliases
-alias ll='ls -la'
-alias ..='cd ..'
-alias gst='git status'
-alias gcm='git commit -m'
-alias gp='git push'
+alias l='ls -la'
+alias q='cd ..;l'
+alias s='git status'
+alias c='git commit -m'
+alias p='git push'
 
 # Go development aliases
 alias gor='go run'

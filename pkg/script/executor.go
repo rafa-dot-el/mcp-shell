@@ -171,6 +171,8 @@ func (e *Executor) validateParameters(script *LoadedScript, params map[string]st
 }
 
 // buildArguments constructs command arguments with parameter substitution
+//
+//nolint:unparam // error return reserved for future parameter validation
 func (e *Executor) buildArguments(script *LoadedScript, params map[string]string) ([]string, error) {
 	var args []string
 

@@ -147,9 +147,8 @@ func TestEnqueue(t *testing.T) {
 		t.Error("Job ID is empty")
 	}
 
-	if job.Status != StatusPending {
-		t.Errorf("Expected status %s, got %s", StatusPending, job.Status)
-	}
+	// Note: We don't check initial status here due to race condition with event-driven processing
+	// The job may have already started executing by the time we check
 
 	if job.Name != "test-script" {
 		t.Errorf("Expected name 'test-script', got '%s'", job.Name)
@@ -222,9 +221,12 @@ func TestListPendingJobs(t *testing.T) {
 		manager.Shutdown(ctx)
 	}()
 
-	// Create test script
+	// Create test script that sleeps to keep jobs pending
 	scriptPath := filepath.Join(tmpDir, "test.sh")
-	if err := os.WriteFile(scriptPath, []byte("#!/bin/bash\necho test"), 0750); err != nil {
+	scriptContent := `#!/bin/bash
+sleep 0.5
+echo test`
+	if err := os.WriteFile(scriptPath, []byte(scriptContent), 0750); err != nil {
 		t.Fatalf("Failed to create test script: %v", err)
 	}
 
@@ -241,20 +243,20 @@ func TestListPendingJobs(t *testing.T) {
 		t.Fatalf("Failed to reload script manager: %v", err)
 	}
 
-	// Enqueue multiple jobs
+	// Enqueue multiple jobs (with capacity of 2, the 3rd should stay pending)
 	for i := 0; i < 3; i++ {
 		if _, err := manager.Enqueue("test-script", false, make(map[string]string)); err != nil {
 			t.Fatalf("Enqueue() failed: %v", err)
 		}
 	}
 
-	// Give queue processor time to start processing
-	time.Sleep(100 * time.Millisecond)
+	// Give queue processor time to start first 2 jobs
+	time.Sleep(50 * time.Millisecond)
 
-	// List pending jobs
+	// List pending jobs - should have at least 1 pending
 	pending := manager.ListPendingJobs()
 
-	// Should have pending or running jobs (at least some of the 3)
+	// Should have pending jobs (at least the 3rd one)
 	if len(pending) == 0 {
 		t.Error("Expected pending jobs, got 0")
 	}
@@ -366,7 +368,10 @@ func TestCancelJob(t *testing.T) {
 
 	// Test cancelling a pending job (before it starts)
 	scriptPath := filepath.Join(tmpDir, "test.sh")
-	if err := os.WriteFile(scriptPath, []byte("#!/bin/bash\necho test"), 0750); err != nil {
+	scriptContent := `#!/bin/bash
+sleep 1
+echo test`
+	if err := os.WriteFile(scriptPath, []byte(scriptContent), 0750); err != nil {
 		t.Fatalf("Failed to create test script: %v", err)
 	}
 
@@ -383,7 +388,7 @@ func TestCancelJob(t *testing.T) {
 		t.Fatalf("Failed to reload script manager: %v", err)
 	}
 
-	// Enqueue multiple jobs to fill the queue
+	// Enqueue multiple jobs to fill the queue (capacity is 2, so jobs 3-5 will be pending)
 	jobs := make([]*Job, 5)
 	for i := 0; i < 5; i++ {
 		job, err := manager.Enqueue("test-script", false, make(map[string]string))
@@ -393,16 +398,16 @@ func TestCancelJob(t *testing.T) {
 		jobs[i] = job
 	}
 
-	// Cancel the last job (should still be pending)
-	time.Sleep(100 * time.Millisecond)
+	// Give time for first 2 jobs to start, leaving last 3 pending
+	time.Sleep(50 * time.Millisecond)
 	lastJob := jobs[len(jobs)-1]
 
 	if err := manager.CancelJob(lastJob.ID); err != nil {
 		t.Errorf("CancelJob() failed: %v", err)
 	}
 
-	// Wait a bit for status to update
-	time.Sleep(200 * time.Millisecond)
+	// Give time for cancellation to complete
+	time.Sleep(50 * time.Millisecond)
 
 	// Verify job was cancelled
 	cancelledJob, err := manager.GetJob(lastJob.ID)

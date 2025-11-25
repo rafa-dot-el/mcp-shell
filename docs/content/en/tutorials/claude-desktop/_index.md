@@ -471,15 +471,234 @@ User: Find all markdown files in my documents folder
 Claude: [Executes search-files with appropriate parameters]
 ```
 
+## Docker-Based MCP Server
+
+For containerized environments, you can run MCP Shell in Docker:
+
+### Pull Docker Image
+
+```bash
+# Pull the image
+docker pull ghcr.io/rafa-dot-el/mcp-shell:latest
+
+# Or using Docker Hub
+docker pull rafadotel/mcp-shell:latest
+```
+
+### Configure Claude Desktop with Docker
+
+Configure Claude Desktop to use the Docker container:
+
+```bash
+# macOS/Linux
+cat > ~/Library/Application\ Support/Claude/claude_desktop_config.json <<'EOF'
+{
+  "mcpServers": {
+    "mcp-shell": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-v", "~/.config/mcp-shell:/config:ro",
+        "-v", "~/.local/state/mcp-shell:/logs",
+        "-v", "${PWD}:/workspace",
+        "-w", "/workspace",
+        "ghcr.io/rafa-dot-el/mcp-shell:latest",
+        "serve"
+      ],
+      "env": {
+        "MCP_SHELL_CONFIG": "/config/config.yaml"
+      }
+    }
+  }
+}
+EOF
+```
+
+**For Linux, adjust the path:**
+```bash
+cat > ~/.config/Claude/claude_desktop_config.json <<'EOF'
+{
+  "mcpServers": {
+    "mcp-shell": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-v", "~/.config/mcp-shell:/config:ro",
+        "-v", "~/.local/state/mcp-shell:/logs",
+        "-v", "${PWD}:/workspace",
+        "-w", "/workspace",
+        "ghcr.io/rafa-dot-el/mcp-shell:latest",
+        "serve"
+      ],
+      "env": {
+        "MCP_SHELL_CONFIG": "/config/config.yaml"
+      }
+    }
+  }
+}
+EOF
+```
+
+### Using Podman Instead of Docker
+
+If you prefer Podman over Docker:
+
+```json
+{
+  "mcpServers": {
+    "mcp-shell": {
+      "command": "podman",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-v", "~/.config/mcp-shell:/config:ro",
+        "-v", "~/.local/state/mcp-shell:/logs",
+        "-v", "${PWD}:/workspace",
+        "-w", "/workspace",
+        "ghcr.io/rafa-dot-el/mcp-shell:latest",
+        "serve"
+      ],
+      "env": {
+        "MCP_SHELL_CONFIG": "/config/config.yaml"
+      }
+    }
+  }
+}
+```
+
+### Volume Mounts Explained
+
+The Docker configuration uses three volume mounts:
+
+1. **Config mount** (`~/.config/mcp-shell:/config:ro`):
+   - Mounts your MCP Shell configuration into the container
+   - Read-only (`:ro`) for security
+   - Configuration file is read from `/config/config.yaml` inside container
+
+2. **Log mount** (`~/.local/state/mcp-shell:/logs`):
+   - Mounts log directory for execution logs
+   - Read-write to allow log file creation
+   - Logs persist on host after container stops
+
+3. **Workspace mount** (`${PWD}:/workspace`):
+   - Mounts current working directory into container
+   - Allows scripts to access files in your project
+   - Working directory is set to `/workspace` in container
+
+### Benefits of Docker-Based Deployment
+
+- **Consistent Environment**: Same runtime environment across all machines
+- **Isolation**: Container runs isolated from host system
+- **Easy Version Management**: Use specific image tags for version control
+- **Reproducible**: Configuration can be version-controlled
+- **No Local Installation**: No need to install MCP Shell on host
+- **Security**: Additional isolation layer between scripts and host
+
+### Docker Image Tags
+
+Available image tags:
+
+```bash
+# Latest release
+ghcr.io/rafa-dot-el/mcp-shell:latest
+
+# Specific version
+ghcr.io/rafa-dot-el/mcp-shell:v1.0.0
+
+# Development branch
+ghcr.io/rafa-dot-el/mcp-shell:dev
+```
+
+### Testing Docker Configuration
+
+Test the Docker setup before using with Claude:
+
+```bash
+# Test Docker image
+docker run --rm ghcr.io/rafa-dot-el/mcp-shell:latest version
+
+# Test with config
+docker run --rm -i \
+  -v ~/.config/mcp-shell:/config:ro \
+  ghcr.io/rafa-dot-el/mcp-shell:latest \
+  validate --config /config/config.yaml
+
+# Test serve command
+docker run --rm -i \
+  -v ~/.config/mcp-shell:/config:ro \
+  -v ~/.local/state/mcp-shell:/logs \
+  ghcr.io/rafa-dot-el/mcp-shell:latest \
+  serve
+```
+
+Press Ctrl+C to stop the test server.
+
+### Troubleshooting Docker Setup
+
+**Container fails to start:**
+```bash
+# Check Docker is running
+docker ps
+
+# Check image exists
+docker images | grep mcp-shell
+
+# Pull image if missing
+docker pull ghcr.io/rafa-dot-el/mcp-shell:latest
+```
+
+**Permission errors:**
+```bash
+# Ensure log directory exists and is writable
+mkdir -p ~/.local/state/mcp-shell/logs
+chmod 755 ~/.local/state/mcp-shell/logs
+
+# Check config file permissions
+ls -l ~/.config/mcp-shell/config.yaml
+```
+
+**Volume mount issues:**
+```bash
+# Use absolute paths instead of ~ if needed
+{
+  "mcpServers": {
+    "mcp-shell": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "-v", "/home/user/.config/mcp-shell:/config:ro",
+        "-v", "/home/user/.local/state/mcp-shell:/logs",
+        "-v", "${PWD}:/workspace",
+        "-w", "/workspace",
+        "ghcr.io/rafa-dot-el/mcp-shell:latest",
+        "serve"
+      ],
+      "env": {
+        "MCP_SHELL_CONFIG": "/config/config.yaml"
+      }
+    }
+  }
+}
+```
+
 ## Next Steps
 
 - [Configuration Guide](/docs/configuration/): Learn about advanced configuration options
 - [Advanced Configuration Tutorial](/tutorials/advanced-configuration/): Master complex setups
 - [Security Best Practices](/docs/security/): Secure your MCP Shell deployment
+- [Claude Code Tutorial](/tutorials/claude-code/): Use MCP Shell with Claude Code CLI
 
 ## Resources
 
 - [Claude Desktop Documentation](https://claude.ai/docs)
 - [MCP Protocol Specification](https://modelcontextprotocol.io)
 - [MCP Shell GitHub](https://github.com/rafa-dot-el/mcp-shell)
+- [MCP Shell Docker Images](https://github.com/rafa-dot-el/mcp-shell/pkgs/container/mcp-shell)
 - [Example Configurations](https://github.com/rafa-dot-el/mcp-shell/tree/main/examples)

@@ -95,7 +95,7 @@ func TestTailLog(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	// Test default tail (5 lines)
@@ -124,7 +124,7 @@ func TestTailLog_WithFilter(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	// Test with filter
@@ -149,7 +149,7 @@ func TestTailLog_InvalidFilter(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	// Test with invalid regex
@@ -167,7 +167,7 @@ func TestTailLog_JobNotFound(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	_, err := manager.TailLog("nonexistent", TailOptions{})
@@ -181,7 +181,7 @@ func TestReadFullLog(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	content, err := manager.ReadFullLog(job.ID)
@@ -204,7 +204,7 @@ func TestReadFullLog_JobNotFound(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	_, err := manager.ReadFullLog("nonexistent")
@@ -218,7 +218,7 @@ func TestSearchLog(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	// Search for ERROR lines
@@ -248,7 +248,7 @@ func TestSearchLog_NoMatches(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	// Search for non-existent pattern
@@ -267,7 +267,7 @@ func TestSearchLog_InvalidPattern(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	_, err := manager.SearchLog(job.ID, "[invalid(regex")
@@ -281,7 +281,7 @@ func TestSearchLog_JobNotFound(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	_, err := manager.SearchLog("nonexistent", "pattern")
@@ -295,7 +295,7 @@ func TestGetLogStats(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	stats, err := manager.GetLogStats(job.ID)
@@ -337,7 +337,7 @@ func TestGetLogStats_JobNotFound(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	_, err := manager.GetLogStats("nonexistent")
@@ -351,7 +351,7 @@ func TestReadFullLog_MissingFile(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	// Create test script
@@ -379,7 +379,7 @@ func TestReadFullLog_MissingFile(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	// Delete log file
-	os.Remove(job.LogPath)
+	_ = os.Remove(job.LogPath)
 
 	// Try to read missing log
 	_, err := manager.ReadFullLog(job.ID)
@@ -393,7 +393,7 @@ func TestGetLogStats_MissingFile(t *testing.T) {
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		manager.Shutdown(ctx)
+		_ = manager.Shutdown(ctx)
 	}()
 
 	// Create test script
@@ -421,7 +421,7 @@ func TestGetLogStats_MissingFile(t *testing.T) {
 	time.Sleep(1 * time.Second)
 
 	// Delete log file
-	os.Remove(job.LogPath)
+	_ = os.Remove(job.LogPath)
 
 	// Try to get stats for missing log
 	_, err := manager.GetLogStats(job.ID)

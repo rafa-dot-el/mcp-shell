@@ -157,3 +157,4 @@ __debug_bin
 .hugo_build.lock
 public/
 docs/public/
+CLAUDE.md

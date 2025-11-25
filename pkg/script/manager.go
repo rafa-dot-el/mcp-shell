@@ -115,10 +115,7 @@ func (m *Manager) loadScript(script *config.Script, source string) error {
 	}
 
 	// Check if executable (Unix permissions)
-	isExecutable := false
-	if fileInfo.Mode()&0111 != 0 {
-		isExecutable = true
-	}
+	isExecutable := fileInfo.Mode()&0111 != 0
 
 	// Validate interpreter is allowed
 	if script.Interpreter != "" {
@@ -275,7 +272,8 @@ func (m *Manager) CreateScript(name, content, interpreter string) error {
 	}
 
 	// Write script file
-	if err := os.WriteFile(absPath, []byte(content), 0750); err != nil {
+	// #nosec G306 -- Script files need execute permission (0700 = rwx------)
+	if err := os.WriteFile(absPath, []byte(content), 0700); err != nil {
 		return fmt.Errorf("failed to write script file: %w", err)
 	}
 

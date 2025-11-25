@@ -489,4 +489,3 @@ func TestExecuteScript_ValidationFailure(t *testing.T) {
 		t.Errorf("Expected validation error, got: %v", err)
 	}
 }
-

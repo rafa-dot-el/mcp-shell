@@ -182,7 +182,7 @@ func TestManager_DiscoverFolder(t *testing.T) {
 
 	// Create test scripts
 	for i := 1; i <= 3; i++ {
-		scriptPath := filepath.Join(scriptsDir, filepath.Join("script"+string(rune('0'+i))+".sh"))
+		scriptPath := filepath.Join(scriptsDir, "script"+string(rune('0'+i))+".sh")
 		if err := os.WriteFile(scriptPath, []byte("#!/bin/bash\necho test"), 0750); err != nil {
 			t.Fatalf("Failed to create test script: %v", err)
 		}
