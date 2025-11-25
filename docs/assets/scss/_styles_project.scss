@@ -5,29 +5,226 @@ Add styles for the project here.
 // Import terminal/tech fonts
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600;700&family=Oxanium:wght@400;500;600;700;800&family=Varela+Round&display=swap');
 
-// Terminal-style color palette
-$terminal-green: #22c55e;      // Primary accent - terminal green
-$terminal-green-light: #34d399; // Lighter variant
-$terminal-green-dark: #16a34a;  // Darker variant
-$terminal-cyan: #06b6d4;       // Secondary accent - cyan
-$terminal-blue: #3b82f6;       // Info/link color
-$terminal-purple: #8b5cf6;     // Accent variant
-$terminal-bg-dark: #0f172a;    // Dark background
-$terminal-bg-light: #1e293b;   // Light background
-$terminal-text: #f8fafc;       // Primary text
-$terminal-text-muted: rgba(248, 250, 252, 0.7); // Muted text
+// Professional color palette - Deep blues and grays for serious tech aesthetic
+$primary-blue: #1e3a8a;        // Primary accent - deep navy blue
+$primary-blue-light: #3b82f6;  // Lighter variant - royal blue
+$primary-blue-dark: #1e293b;   // Darker variant - slate
+$secondary-slate: #475569;     // Secondary accent - slate gray
+$accent-teal: #0d9488;         // Accent variant - professional teal
+$accent-indigo: #4f46e5;       // Accent variant - indigo
+$bg-dark: #0f172a;             // Dark background - navy black
+$bg-light: #1e293b;            // Light background - dark slate
+$text-primary: #f8fafc;        // Primary text - off white
+$text-muted: rgba(248, 250, 252, 0.7); // Muted text
 
-// Gradients using terminal colors
-$terminal-gradient: linear-gradient(135deg, $terminal-green 0%, $terminal-cyan 100%);
-$terminal-glow: 0 0 20px rgba($terminal-green, 0.3);
-$hero-text-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+// Color aliases for consistency
+$primary: $primary-blue;
+$secondary: $accent-teal;
+$accent: $primary-blue;
+$info: $primary-blue-light;
+$dark: $bg-dark;
+
+// Gradients using professional colors
+$primary-gradient: linear-gradient(135deg, $primary-blue 0%, $accent-indigo 100%);
+$accent-gradient: $primary-gradient;
+$primary-glow: 0 0 20px rgba($primary-blue, 0.3);
+$hero-text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+// Spacing system (8px grid)
+$spacing-xs: 0.5rem;   // 8px
+$spacing-sm: 1rem;     // 16px
+$spacing-md: 1.5rem;   // 24px
+$spacing-lg: 2rem;     // 32px
+$spacing-xl: 3rem;     // 48px
+$spacing-2xl: 4rem;    // 64px
+$spacing-3xl: 6rem;    // 96px
+
+// Border radius system
+$border-radius: 0.5rem;      // 8px
+$border-radius-sm: 0.375rem; // 6px
+$border-radius-lg: 0.75rem;  // 12px
+$border-radius-xl: 1rem;     // 16px
+$border-radius-2xl: 1.5rem;  // 24px
+
+// Sizing system - icon containers and special elements
+$icon-container-sm: 42px;    // Small icon containers (social links)
+$icon-container-md: 48px;    // Medium icon containers (buttons)
+$icon-container-lg: 64px;    // Large icon containers (freedom icons)
+$underline-width-sm: 40px;   // Small underline width (footer headings)
+$underline-width-md: 50px;   // Medium underline width
+$underline-height: 2px;      // Standard underline height
+$underline-height-lg: 3px;   // Large underline height (footer terminal line)
+
+// Shadow system
+$box-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$box-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$box-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$box-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+$card-hover-shadow: 0 20px 40px rgba($primary-blue, 0.15);
+
+// Transition system
+$transition-base: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-fast: all 0.15s ease-in-out;
+$transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Opacity scale - for rgba() values
+$opacity-subtle: 0.02;       // Very subtle transparency
+$opacity-faint: 0.05;        // Faint transparency
+$opacity-light: 0.1;         // Light transparency
+$opacity-soft: 0.15;         // Soft transparency
+$opacity-medium: 0.2;        // Medium transparency
+$opacity-moderate: 0.25;     // Moderate transparency
+$opacity-visible: 0.3;       // Clearly visible transparency
+$opacity-half: 0.5;          // Half transparency
+$opacity-strong: 0.7;        // Strong opacity
+$opacity-bright: 0.8;        // Bright opacity
+$opacity-near-opaque: 0.9;   // Nearly opaque
+
+// Z-index scale - layering system
+$z-index-base: 1;            // Base layer
+$z-index-overlay: 2;         // Overlay elements
+$z-index-dropdown: 10;       // Dropdown menus
+$z-index-modal: 100;         // Modal dialogs
+
+// Animation durations
+$animation-duration-fast: 0.5s;    // Fast animations
+$animation-duration-base: 1s;      // Standard animations
+$animation-duration-slow: 2s;      // Slow animations
 
 // Font family variables
 $font-header: 'Oxanium', sans-serif;        // Headers and hero
 $font-body: 'Varela Round', sans-serif;     // Paragraphs and body text
 $font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace; // Code and technical
 
-// Global header styling with Oxanium
+// Typography scale - centralized font sizes
+$font-size-xs: 0.75rem;      // 12px - small labels, captions
+$font-size-sm: 0.875rem;     // 14px - small text, footer
+$font-size-base: 1rem;       // 16px - base body text
+$font-size-md: 1.125rem;     // 18px - large body text, leads
+$font-size-lg: 1.25rem;      // 20px - large text
+$font-size-xl: 1.5rem;       // 24px - h5, h6
+$font-size-2xl: 1.875rem;    // 30px - h4
+$font-size-3xl: 2.25rem;     // 36px - h3
+$font-size-4xl: 3rem;        // 48px - h2
+$font-size-5xl: 3.75rem;     // 60px - h1
+$font-size-6xl: 4.5rem;      // 72px - hero titles
+
+// Custom typography sizes - special use cases
+$font-size-custom-xs: 0.85rem;      // 13.6px - footer link icons, small elements
+$font-size-custom-sm: 0.9rem;       // 14.4px - code, footer links, descriptions
+$font-size-custom-lg: 1.1rem;       // 17.6px - footer stats icons
+$font-size-hero-lead: 1.375rem;     // 22px - hero lead text
+$font-size-footer-logo: 1.75rem;    // 28px - footer brand logo
+$font-size-scroll-indicator: 2rem;  // 32px - scroll down indicator
+$font-size-section-title: 2.5rem;   // 40px - section titles, hero subtitle
+$font-size-hero-title: 5.5rem;      // 88px - main hero title
+$font-size-stat-number: 3rem;       // 48px - statistics numbers
+
+// Text colors for light backgrounds
+$text-dark-primary: #0f172a;           // Primary text on light - dark navy
+$text-dark-secondary: #334155;         // Secondary text on light - slate
+$text-dark-muted: #64748b;             // Muted text on light - lighter slate
+
+// Text colors for dark backgrounds
+$text-light-primary: #f8fafc;          // Primary text on dark - off white
+$text-light-secondary: #e2e8f0;        // Secondary text on dark - light gray
+$text-light-muted: rgba(248, 250, 252, 0.7); // Muted text on dark - translucent white
+
+// Background colors
+$bg-white: #ffffff;                     // Pure white background
+$bg-gray-50: #f8fafc;                   // Very light gray background
+$bg-gray-100: #f1f5f9;                  // Light gray background
+$bg-gray-200: #e2e8f0;                  // Medium light gray background
+
+// Highlight colors - consistent accent colors for interactive elements
+$highlight-primary: $primary-blue-light;      // Primary highlight - royal blue (#3b82f6)
+$highlight-secondary: $accent-teal;           // Secondary highlight - teal (#0d9488)
+$highlight-hover: $accent-indigo;             // Hover state highlight - indigo (#4f46e5)
+
+// Icon colors
+$icon-dark-bg: $text-light-primary;           // Icons on dark backgrounds - white
+$icon-light-bg: $text-dark-secondary;         // Icons on light backgrounds - slate
+$icon-highlight-dark-bg: $highlight-primary;  // Highlighted icons on dark - blue
+$icon-highlight-light-bg: $highlight-secondary; // Highlighted icons on light - teal
+
+// Status and feedback colors
+$color-error: #ef4444;                        // Error/red - for love icon and error states
+$color-success: #10b981;                      // Success/green
+$color-warning: #f59e0b;                      // Warning/amber
+
+// Syntax highlighting colors - dark mode
+$syntax-dark-comment: #9ca3af;                // Comments - lighter gray
+$syntax-dark-keyword: #a78bfa;                // Keywords - lighter purple
+$syntax-dark-string: #5eead4;                 // Strings - bright teal
+$syntax-dark-number: #fbbf24;                 // Numbers - bright amber
+$syntax-dark-operator: #60a5fa;               // Operators - bright blue
+$syntax-dark-builtin: #60a5fa;                // Built-ins - bright blue
+$syntax-dark-function: #fb7185;               // Functions - pink
+$syntax-dark-shell: #f472b6;                  // Shell prompts (#) - hot pink
+$syntax-dark-preprocessor: #a78bfa;           // Preprocessor - lighter purple
+$syntax-dark-constant: #fbbf24;               // Constants - bright amber
+$syntax-dark-type: #60a5fa;                   // Types - bright blue
+$syntax-dark-tag: #fb7185;                    // Tags - pink
+$syntax-dark-attribute: #60a5fa;              // Attributes - bright blue
+$syntax-dark-variable: #f472b6;               // Variables - hot pink
+$syntax-dark-escape: #fbbf24;                 // String escapes - bright amber
+$syntax-dark-linenumber: #64748b;             // Line numbers - slate gray
+
+// Syntax highlighting colors - light mode
+$syntax-light-comment: #475569;               // Comments - slate
+$syntax-light-keyword: #7c3aed;               // Keywords - purple
+$syntax-light-string: #059669;                // Strings - green
+$syntax-light-number: #d97706;                // Numbers - amber
+$syntax-light-operator: #0891b2;              // Operators - cyan
+$syntax-light-builtin: #2563eb;               // Built-ins - blue
+$syntax-light-function: #dc2626;              // Functions - red
+$syntax-light-shell: #be185d;                 // Shell prompts - pink
+$syntax-light-preprocessor: #7c3aed;          // Preprocessor - purple
+$syntax-light-constant: #d97706;              // Constants - amber
+$syntax-light-type: #0891b2;                  // Types - cyan
+$syntax-light-tag: #dc2626;                   // Tags - red
+$syntax-light-attribute: #2563eb;             // Attributes - blue
+$syntax-light-variable: #be185d;              // Variables - pink
+$syntax-light-escape: #d97706;                // String escapes - amber
+$syntax-light-text: #1e293b;                  // Code text - dark slate
+
+// Button design system
+$btn-font-weight: 600;
+$btn-letter-spacing: 0.025em;
+$btn-min-height: 44px;
+$btn-min-height-lg: 52px;
+$btn-padding: 0.625rem 1.5rem;
+$btn-padding-lg: 0.875rem 2rem;
+$btn-icon-spacing: 0.5rem;  // Space between icon and text
+
+// Button colors for dark backgrounds
+$btn-primary-bg: $primary-gradient;
+$btn-primary-bg-hover: linear-gradient(135deg, $primary-blue-light 0%, $accent-indigo 100%);
+$btn-primary-text: $text-light-primary;
+$btn-primary-shadow-hover: 0 10px 25px -5px rgba($primary-blue, 0.5);
+
+// Button colors for light backgrounds
+$btn-secondary-bg: rgba($accent-teal, 0.9);
+$btn-secondary-bg-hover: $accent-teal;
+$btn-secondary-text: $text-light-primary;
+$btn-secondary-shadow-hover: 0 0 20px rgba($accent-teal, 0.3);
+
+// Outline buttons for dark backgrounds
+$btn-outline-light-bg: rgba(255, 255, 255, 0.1);
+$btn-outline-light-bg-hover: rgba(255, 255, 255, 0.2);
+$btn-outline-light-border: 2px solid rgba(255, 255, 255, 0.3);
+$btn-outline-light-border-hover: rgba(255, 255, 255, 0.5);
+$btn-outline-light-text: $text-light-primary;
+
+// Outline buttons for light backgrounds
+$btn-outline-dark-bg: transparent;
+$btn-outline-dark-bg-hover: $bg-dark;
+$btn-outline-dark-border: 2px solid $bg-dark;
+$btn-outline-dark-text: $text-dark-primary;
+$btn-outline-dark-text-hover: $text-light-primary;
+
+// Global header styling with Oxanium and standardized sizes
 h1, h2, h3, h4, h5, h6,
 .display-1, .display-2, .display-3, .display-4,
 .section-title {
@@ -36,12 +233,62 @@ h1, h2, h3, h4, h5, h6,
   letter-spacing: 0.02em;
 }
 
+h1 { font-size: $font-size-5xl !important; }
+h2 { font-size: $font-size-4xl !important; }
+h3 { font-size: $font-size-3xl !important; }
+h4 { font-size: $font-size-2xl !important; }
+h5 { font-size: $font-size-xl !important; }
+h6 { font-size: $font-size-lg !important; }
+
 // Global paragraph and body text styling with Varela Round
 p, .lead, .section-description,
 body, .td-content {
   font-family: $font-body !important;
-  font-size: 1.125rem !important;
+  font-size: $font-size-md !important;  // 18px
   line-height: 1.7 !important;
+}
+
+// Text color utilities for light backgrounds
+.text-on-light,
+.bg-white p,
+.bg-light p {
+  color: $text-dark-primary !important;
+
+  h1, h2, h3, h4, h5, h6 {
+    color: $text-dark-primary !important;
+  }
+
+  .text-muted {
+    color: $text-dark-muted !important;
+  }
+}
+
+// Text color utilities for dark backgrounds
+.text-on-dark,
+.td-box--dark,
+.td-box--primary,
+.bg-dark,
+.td-footer {
+  color: $text-light-primary !important;
+
+  p {
+    color: $text-light-secondary !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: $text-light-primary !important;
+  }
+
+  .text-muted {
+    color: $text-light-muted !important;
+  }
+}
+
+// Standardize dark section backgrounds across all dark sections
+// Apply consistent $bg-dark color to Use Cases, FOSS section, and footer
+.td-box--dark,
+.td-box--primary {
+  background: $bg-dark !important;
 }
 
 // Enhanced hero section with network mesh background
@@ -86,12 +333,12 @@ body, .td-content {
     bottom: 0;
     background:
       linear-gradient(90deg,
-        rgba($terminal-bg-dark, 0.5) 0%,
-        rgba($terminal-bg-dark, 0.3) 50%,
-        rgba($terminal-bg-dark, 0.1) 100%
+        rgba($bg-dark, 0.7) 0%,
+        rgba($bg-dark, 0.5) 50%,
+        rgba($bg-dark, 0.3) 100%
       );
     pointer-events: none;
-    z-index: 1;
+    z-index: $z-index-base;
   }
 
   .display-1, .display-2, .display-3, .display-4 {
@@ -100,63 +347,68 @@ body, .td-content {
     letter-spacing: -0.03em;
     color: white;
     position: relative;
-    z-index: 2;
+    z-index: $z-index-overlay;
   }
 
   .lead {
     text-shadow: $hero-text-shadow;
-    font-size: 1.375rem;
+    font-size: $font-size-hero-lead;
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, $opacity-near-opaque);
     line-height: 1.6;
     position: relative;
-    z-index: 2;
+    z-index: $z-index-overlay;
   }
 
   .btn {
-    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, $opacity-medium);
     font-weight: 600;
     text-transform: none;
     letter-spacing: 0.025em;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: none;
     position: relative;
-    z-index: 2;
+    z-index: $z-index-overlay;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
 
     &.btn-primary {
-      background: $terminal-gradient;
-      color: $terminal-text;
+      background: $primary-gradient;
+      color: $text-primary;
       border: none;
 
       &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px -5px rgba($terminal-green, 0.4);
-        background: linear-gradient(135deg, $terminal-green-light 0%, $terminal-cyan 100%);
+        transform: translateY(-1px);
+        box-shadow: 0 10px 25px -5px rgba($primary-blue, 0.5);
+        background: linear-gradient(135deg, $primary-blue-light 0%, $accent-indigo 100%);
       }
     }
 
     &.btn-outline-light, &.btn-secondary {
-      background: rgba($terminal-green, 0.1);
-      color: $terminal-green;
-      border: 2px solid $terminal-green;
+      background: rgba($accent-teal, 0.1);
+      color: $accent-teal;
+      border: 2px solid $accent-teal;
       backdrop-filter: blur(10px);
 
       &:hover {
-        background: $terminal-green;
-        color: $terminal-bg-dark;
+        background: $accent-teal;
+        color: white;
         transform: translateY(-3px);
-        box-shadow: $terminal-glow;
+        box-shadow: $primary-glow;
       }
     }
 
     &.btn-info {
-      background: rgba($terminal-cyan, 0.9);
-      color: $terminal-bg-dark;
+      background: rgba($accent-teal, 0.9);
+      color: white;
 
       &:hover {
-        background: $terminal-cyan;
+        background: $accent-teal;
         transform: translateY(-3px);
-        box-shadow: 0 0 20px rgba($terminal-cyan, 0.3);
+        box-shadow: 0 0 20px rgba($accent-teal, 0.3);
       }
     }
   }
@@ -165,14 +417,14 @@ body, .td-content {
 // Left-aligned hero content
 .hero-content-left {
   position: relative;
-  z-index: 2;
+  z-index: $z-index-overlay;
   width: 100%;
 
   .hero-title {
     font-family: 'Saira', sans-serif;
-    font-size: 5.5rem;
+    font-size: $font-size-hero-title;
     font-weight: 800;
-    color: $terminal-text;
+    color: $text-primary;
     text-shadow: $hero-text-shadow;
     letter-spacing: -0.02em;
     margin-bottom: 1rem;
@@ -181,22 +433,23 @@ body, .td-content {
 
   .hero-subtitle {
     font-family: 'Saira', sans-serif;
-    font-size: 2.5rem;
+    font-size: $font-size-section-title;
     font-weight: 600;
-    color: $terminal-green;
+    color: $text-primary;
     margin-bottom: 1.5rem;
-    text-shadow: $terminal-glow;
+    text-shadow: $hero-text-shadow;
     letter-spacing: 0.02em;
   }
 
   .hero-description {
     font-family: 'Varela Round', sans-serif;
-    font-size: 1.375rem;
+    font-size: $font-size-hero-lead;
     font-weight: 400;
-    color: $terminal-text-muted;
+    color: rgba($text-primary, 0.85);
     line-height: 1.7;
     margin-bottom: 0;
     max-width: 700px;
+    text-shadow: $hero-text-shadow;
   }
 
   .hero-actions {
@@ -244,7 +497,7 @@ body, .td-content {
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 0.5rem 1rem;
-    font-size: 0.875rem;
+    font-size: $font-size-sm;
     font-weight: 500;
     border-radius: 50px;
     backdrop-filter: blur(10px);
@@ -256,17 +509,17 @@ body, .td-content {
     }
 
     i {
-      color: $terminal-green;
+      color: $accent-teal;
     }
 
     &.badge-featured {
-      background: rgba($terminal-green, 0.2);
-      border-color: rgba($terminal-green, 0.4);
+      background: rgba($accent-teal, 0.2);
+      border-color: rgba($accent-teal, 0.4);
       font-weight: 600;
 
       &:hover {
-        background: rgba($terminal-green, 0.3);
-        border-color: rgba($terminal-green, 0.6);
+        background: rgba($accent-teal, 0.3);
+        border-color: rgba($accent-teal, 0.6);
       }
     }
   }
@@ -279,7 +532,7 @@ body, .td-content {
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
     padding: 0.5rem 1rem;
-    font-size: 0.875rem;
+    font-size: $font-size-sm;
     font-weight: 500;
     border-radius: 50px;
     backdrop-filter: blur(10px);
@@ -291,23 +544,23 @@ body, .td-content {
     }
 
     i {
-      color: $terminal-green;
+      color: $accent-teal;
     }
 
     &.badge-featured {
-      background: rgba($terminal-green, 0.2);
-      border-color: rgba($terminal-green, 0.4);
+      background: rgba($accent-teal, 0.2);
+      border-color: rgba($accent-teal, 0.4);
       color: white;
       font-weight: 600;
-      box-shadow: 0 0 20px rgba($terminal-green, 0.3);
+      box-shadow: 0 0 20px rgba($accent-teal, 0.3);
 
       &:hover {
-        background: rgba($terminal-green, 0.3);
-        box-shadow: 0 0 30px rgba($terminal-green, 0.5);
+        background: rgba($accent-teal, 0.3);
+        box-shadow: 0 0 30px rgba($accent-teal, 0.5);
       }
 
       i {
-        color: $terminal-green;
+        color: $accent-teal;
       }
     }
   }
@@ -316,7 +569,7 @@ body, .td-content {
 // Hero freedom message
 .hero-freedom-message {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 1rem;
+  font-size: $font-size-base;
   font-weight: 400;
   text-align: center;
   margin: 0;
@@ -326,8 +579,8 @@ body, .td-content {
 
 // Scroll indicator animation
 .scroll-indicator {
-  animation: bounce 2s infinite;
-  font-size: 2rem;
+  animation: bounce $animation-duration-slow infinite;
+  font-size: $font-size-scroll-indicator;
   opacity: 0.8;
 
   &:hover {
@@ -350,69 +603,73 @@ body, .td-content {
 
 // Enhanced section styling
 .td-block {
-  padding: 6rem 0;
+  padding: $spacing-3xl 0;
 
   .section-title {
     font-weight: 800;
     letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
-    color: $primary;
-    font-size: 2.5rem;
+    margin-bottom: $spacing-md;
+    color: $primary-blue;
+    font-size: $font-size-section-title;
+    font-family: $font-header;
   }
 
   .section-description {
-    font-size: 1.25rem;
+    font-size: $font-size-lg;
     font-weight: 400;
     line-height: 1.7;
-    color: $secondary;
+    color: $text-muted;
     max-width: 800px;
     margin: 0 auto;
+    font-family: $font-body;
   }
 
   h2 {
     font-weight: 700;
     letter-spacing: -0.025em;
-    margin-bottom: 2rem;
+    margin-bottom: $spacing-lg;
+    font-family: $font-header;
   }
 
   .lead {
-    font-size: 1.125rem;
+    font-size: $font-size-md;
     font-weight: 400;
     line-height: 1.7;
+    font-family: $font-body;
   }
 }
 
 // Stats section
 .stat-item {
   text-align: center;
-  padding: 1.5rem 1rem;
-  transition: all 0.3s ease;
+  padding: $spacing-md $spacing-sm;
+  transition: $transition-base;
 
   &:hover {
     transform: translateY(-5px);
   }
 
   .stat-number {
-    font-size: 3rem;
+    font-size: $font-size-stat-number;
     font-weight: 800;
-    color: $accent;
+    color: $accent-teal;
     line-height: 1;
-    margin-bottom: 0.5rem;
-    font-family: $font-family-sans-serif;
+    margin-bottom: $spacing-xs;
+    font-family: $font-header;
   }
 
   .stat-label {
-    font-size: 0.875rem;
+    font-size: $font-size-sm;
     font-weight: 600;
-    color: $secondary;
+    color: $primary-blue-light;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
+    margin-bottom: $spacing-xs;
   }
 
   .stat-description {
-    font-size: 0.75rem;
-    color: lighten($secondary, 10%);
+    font-size: $font-size-xs;
+    color: $text-muted;
     line-height: 1.4;
   }
 
@@ -420,12 +677,12 @@ body, .td-content {
     position: relative;
 
     .stat-number {
-      color: $terminal-green;
-      text-shadow: 0 0 10px rgba($terminal-green, 0.3);
+      color: $accent-teal;
+      text-shadow: $primary-glow;
     }
 
     .stat-label {
-      color: $terminal-green;
+      color: $accent-teal;
     }
 
     &::after {
@@ -436,8 +693,8 @@ body, .td-content {
       transform: translateX(-50%);
       width: 30px;
       height: 3px;
-      background: linear-gradient(90deg, $terminal-green 0%, $accent 100%);
-      border-radius: 2px;
+      background: $primary-gradient;
+      border-radius: $border-radius-sm;
     }
   }
 }
@@ -445,56 +702,60 @@ body, .td-content {
 // Modern feature cards with tech styling
 .feature-card {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: $spacing-xl $spacing-lg;
   background: rgba(255, 255, 255, 0.02);
   border-radius: $border-radius-xl;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: $transition-slow;
   height: 100%;
 
   &:hover {
     transform: translateY(-8px);
     box-shadow: $card-hover-shadow;
     background: rgba(255, 255, 255, 0.05);
-    border-color: rgba($accent, 0.3);
+    border-color: rgba($highlight-secondary, 0.3);
   }
 
   .fa-4x {
-    color: $accent;
-    margin-bottom: 2rem;
-    filter: drop-shadow(0 4px 8px rgba($accent, 0.2));
-    transition: all 0.3s ease;
+    color: $icon-dark-bg;
+    margin-bottom: $spacing-lg;
+    filter: drop-shadow(0 4px 8px rgba($icon-dark-bg, 0.2));
+    transition: $transition-base;
   }
 
   &:hover .fa-4x {
-    color: $terminal-green;
-    filter: drop-shadow($terminal-glow);
+    color: $icon-highlight-dark-bg;
+    filter: drop-shadow($primary-glow);
   }
 
   h4 {
     font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: white;
+    font-size: $font-size-2xl;
+    margin-bottom: $spacing-md;
+    color: $text-light-primary;
     letter-spacing: -0.02em;
+    font-family: $font-header;
   }
 
   p {
-    color: rgba(255, 255, 255, 0.8);
+    color: $text-light-secondary;
+    font-size: $font-size-base;
     line-height: 1.6;
+    font-family: $font-body;
   }
 }
 
-// Terminal-style code blocks
+// Professional code blocks (standalone, not in .highlight)
 pre {
-  background: $terminal-bg-dark !important;
+  background: #1a1f2e !important;
   border-radius: $border-radius-lg;
-  padding: 2rem;
+  padding: 3.5rem 2rem 2rem 2rem;
   margin: 2rem 0;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba($terminal-green, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba($accent-teal, 0.25);
   position: relative;
-  overflow: hidden;
+  overflow-x: auto;
 
   &::before {
     content: '';
@@ -502,73 +763,191 @@ pre {
     top: 0;
     left: 0;
     right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, $terminal-green 0%, $terminal-cyan 100%);
+    height: 2px;
+    background: linear-gradient(90deg, $accent-teal 0%, $primary-blue-light 50%, $accent-indigo 100%);
+    border-radius: $border-radius-lg $border-radius-lg 0 0;
   }
 
   code {
-    color: $terminal-text !important;
-    font-size: 0.9rem;
-    line-height: 1.7;
+    color: #e2e8f0 !important;
+    font-size: $font-size-custom-sm;
+    line-height: 1.8;
     font-family: $font-mono;
   }
 }
 
-// Modern installation cards
+// Modern installation cards with grayish background
 .installation-method {
-  background: rgba(255, 255, 255, 0.98);
-  border-radius: $border-radius-xl;
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid rgba($terminal-green, 0.2);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  background: linear-gradient(33deg, rgba(65, 67, 203, 0.15) 0%, rgba(43, 143, 160, 0.25) 59%, rgba(49, 130, 171, 0.15) 54%, rgba(75, 69, 222, 0.15) 72%),
+              linear-gradient(180deg, rgba(27, 54, 70, 0.95) 0%, rgba(49, 49, 94, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  border-radius: $border-radius-lg;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-lg;
+  border: 1px solid rgba(43, 143, 160, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(43, 143, 160, 0.1);
+  transition: none;
   position: relative;
   overflow: hidden;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(180deg, $terminal-green 0%, $terminal-cyan 100%);
-  }
-
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    border-color: rgba($terminal-green, 0.4);
+    box-shadow: 0 6px 25px rgba(43, 143, 160, 0.3), inset 0 1px 0 rgba(43, 143, 160, 0.2);
+    border-color: rgba(43, 143, 160, 0.5);
+    background: linear-gradient(33deg, rgba(65, 67, 203, 0.2) 0%, rgba(43, 143, 160, 0.3) 59%, rgba(49, 130, 171, 0.2) 54%, rgba(75, 69, 222, 0.2) 72%),
+                linear-gradient(180deg, rgba(27, 54, 70, 0.98) 0%, rgba(49, 49, 94, 0.98) 100%);
   }
 
   h4 {
-    color: $terminal-bg-dark;
+    color: $text-light-primary;
     font-weight: 700;
-    margin-bottom: 1rem;
+    font-size: $font-size-2xl;
+    margin-bottom: $spacing-sm;
     letter-spacing: -0.02em;
+    font-family: $font-header;
 
     i {
       margin-right: 0.75rem;
-      color: $terminal-green;
+      background: linear-gradient(135deg, $accent-teal 0%, $primary-blue-light 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   }
 
   .text-muted {
-    color: #475569 !important;
-    font-size: 0.95rem;
+    color: $text-light-secondary !important;
+    font-size: $font-size-base;
+    font-family: $font-body;
   }
 }
 
-// Button enhancements
+// Light mode adjustments for installation cards
+@media (prefers-color-scheme: light) {
+  .installation-method {
+    background: linear-gradient(333deg, rgba(65, 67, 203, 0.08) 0%, rgba(43, 143, 160, 0.08) 59%, rgba(49, 130, 171, 0.08) 54%, rgba(75, 69, 222, 0.08) 72%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 245, 255, 0.95) 100%);
+    border: 1px solid rgba(43, 143, 160, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(43, 143, 160, 0.05);
+
+    &:hover {
+      box-shadow: 0 6px 25px rgba(43, 143, 160, 0.15), inset 0 1px 0 rgba(43, 143, 160, 0.1);
+      border-color: rgba(43, 143, 160, 0.35);
+      background: linear-gradient(333deg, rgba(65, 67, 203, 0.12) 0%, rgba(43, 143, 160, 0.12) 59%, rgba(49, 130, 171, 0.12) 54%, rgba(75, 69, 222, 0.12) 72%),
+                  linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 245, 255, 0.98) 100%);
+    }
+
+    h4 {
+      color: $primary-blue-dark;
+    }
+
+    .text-muted {
+      color: lighten($primary-blue-dark, 15%) !important;
+    }
+  }
+}
+
+// Button enhancements - Professional styling with consistent height and alignment
 .btn {
   border-radius: $border-radius;
-  font-weight: 500;
-  transition: all 0.15s ease-in-out;
+  font-weight: $btn-font-weight;
+  transition: $transition-base;
+  font-family: $font-body;
+  letter-spacing: $btn-letter-spacing;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $btn-icon-spacing;  // Consistent spacing between icon and text
+  min-height: $btn-min-height;
+  padding: $btn-padding;
+
+  i {
+    margin: 0;  // Remove default margin, use gap instead
+  }
 
   &.btn-lg {
-    padding: 0.75rem 2rem;
-    font-size: 1.125rem;
+    padding: $btn-padding-lg;
+    font-size: $font-size-md;
+    min-height: $btn-min-height-lg;
+  }
+
+  &.btn-primary {
+    background: $btn-primary-bg;
+    color: $btn-primary-text;
+    border: none;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $btn-primary-shadow-hover;
+      background: $btn-primary-bg-hover;
+      color: $btn-primary-text;
+    }
+  }
+
+  &.btn-secondary {
+    background: $btn-secondary-bg;
+    color: $btn-secondary-text;
+    border: none;
+
+    &:hover {
+      background: $btn-secondary-bg-hover;
+      transform: translateY(-2px);
+      box-shadow: $btn-secondary-shadow-hover;
+      color: $btn-secondary-text;
+    }
+  }
+
+  &.btn-info {
+    background: rgba($primary-blue-light, 0.9);
+    color: $btn-primary-text;
+    border: none;
+
+    &:hover {
+      background: $primary-blue-light;
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba($primary-blue-light, 0.3);
+      color: $btn-primary-text;
+    }
+  }
+
+  &.btn-outline-light {
+    background: $btn-outline-light-bg;
+    color: $btn-outline-light-text;
+    border: $btn-outline-light-border;
+    backdrop-filter: blur(10px);
+
+    &:hover {
+      background: $btn-outline-light-bg-hover;
+      border-color: $btn-outline-light-border-hover;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(255, 255, 255, 0.2);
+      color: $btn-outline-light-text;
+    }
+  }
+
+  &.btn-outline-dark {
+    background: $btn-outline-dark-bg;
+    color: $btn-outline-dark-text;
+    border: $btn-outline-dark-border;
+
+    &:hover {
+      background: $btn-outline-dark-bg-hover;
+      color: $btn-outline-dark-text-hover;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba($bg-dark, 0.3);
+    }
+  }
+
+  &.btn-light {
+    background: $bg-white;
+    color: $text-dark-primary;
+    border: none;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.95);
+      transform: translateY(-2px);
+      box-shadow: $box-shadow-lg;
+      color: $bg-dark;
+    }
   }
 }
 
@@ -577,7 +956,7 @@ pre {
   border-radius: $border-radius-lg;
   box-shadow: $box-shadow;
   border: none;
-  transition: all 0.2s ease-in-out;
+  transition: $transition-fast;
 
   &:hover {
     transform: translateY(-4px);
@@ -600,15 +979,16 @@ pre {
   .td-sidebar-nav {
     .td-sidebar-link {
       font-weight: 500;
-      transition: all 0.15s ease-in-out;
+      transition: $transition-fast;
+      font-family: $font-body;
 
       &:hover {
-        color: $primary;
+        color: $accent-teal;
         text-decoration: none;
       }
 
       &.active {
-        color: $primary;
+        color: $accent-teal;
         font-weight: 600;
       }
     }
@@ -633,22 +1013,66 @@ pre {
   }
 }
 
-// Open source principles styling
-.open-source-principle {
-  padding: 1rem;
-  transition: all 0.3s ease;
+// Four Freedoms horizontal layout styling
+.freedom-item {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-lg;
+  padding: $spacing-lg;
+  transition: $transition-base;
+  border-radius: $border-radius;
 
-  &:hover {
-    transform: translateY(-5px);
+  .freedom-icon-wrapper {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $icon-container-lg;
+    height: $icon-container-lg;
+    border-radius: $border-radius;
+    background: rgba($primary-blue, $opacity-soft);
+    transition: $transition-base;
 
     i {
-      color: $terminal-green !important;
+      color: $icon-dark-bg;
+      filter: drop-shadow(0 4px 8px rgba($icon-dark-bg, 0.2));
+      transition: $transition-base;
     }
   }
 
-  h5 {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+  .freedom-content {
+    flex: 1;
+
+    h5 {
+      font-weight: 700;
+      font-size: $font-size-xl;
+      color: $text-light-primary;
+      margin-bottom: $spacing-sm;
+      font-family: $font-header;
+    }
+
+    .freedom-description {
+      color: $text-light-secondary;
+      font-size: $font-size-base;
+      line-height: 1.6;
+      font-family: $font-body;
+      margin-bottom: 0;
+    }
+  }
+
+  &:hover {
+    transform: translateX(8px);
+    background: rgba($primary-blue, 0.05);
+
+    .freedom-icon-wrapper {
+      background: $primary-gradient;
+      box-shadow: 0 8px 20px rgba($primary-blue, 0.4);
+
+      i {
+        color: $text-light-primary;
+        filter: drop-shadow($primary-glow);
+      }
+    }
   }
 }
 
@@ -670,39 +1094,39 @@ pre {
 // Responsive enhancements
 @media (max-width: 768px) {
   .td-cover {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
+    padding-top: $spacing-3xl;
+    padding-bottom: $spacing-3xl;
     min-height: 100vh;
 
     .display-1, .display-2, .display-3, .display-4 {
-      font-size: 2.5rem;
+      font-size: $font-size-section-title;
     }
 
     .lead {
-      font-size: 1.125rem;
+      font-size: $font-size-md;
     }
 
     .btn-lg {
-      font-size: 1rem;
-      padding: 0.75rem 1.5rem;
-      margin: 0.25rem;
+      font-size: $font-size-base;
+      padding: 0.75rem $spacing-md;
+      margin: $spacing-xs/2;
     }
   }
 
   .hero-content-left {
     .hero-title {
-      font-size: 2.5rem;
+      font-size: $font-size-section-title;
       margin-bottom: 0.75rem;
     }
 
     .hero-subtitle {
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
+      font-size: $font-size-lg;
+      margin-bottom: $spacing-sm;
     }
 
     .hero-description {
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
+      font-size: $font-size-base;
+      margin-bottom: $spacing-md;
     }
 
     .hero-actions {
@@ -721,50 +1145,524 @@ pre {
   }
 
   .hero-badges-left {
-    margin-top: 1.5rem;
+    margin-top: $spacing-md;
 
     .badge-tech {
-      font-size: 0.75rem;
+      font-size: $font-size-xs;
       padding: 0.375rem 0.75rem;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
+      margin-right: $spacing-xs;
+      margin-bottom: $spacing-xs;
     }
   }
 
   .hero-badges .badge-tech {
-    font-size: 0.75rem;
+    font-size: $font-size-xs;
     padding: 0.375rem 0.75rem;
   }
 
   .section-title {
-    font-size: 2rem !important;
+    font-size: $font-size-scroll-indicator !important;
   }
 
   .stat-item .stat-number {
-    font-size: 2.5rem;
+    font-size: $font-size-section-title;
   }
 
   .feature-card {
-    margin-bottom: 2rem;
+    margin-bottom: $spacing-lg;
   }
 
   .installation-method {
-    padding: 2rem 1.5rem;
+    padding: $spacing-lg $spacing-md;
   }
 }
 
-// Footer enhancements
+// Footer enhancements - Professional multi-column layout with fixed margins
 .td-footer {
-  background: $dark;
-  color: rgba(255, 255, 255, 0.8);
+  background: $bg-dark !important;
+  color: $text-muted;
+  position: relative;
+  overflow: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
 
   a {
     color: rgba(255, 255, 255, 0.9);
-    transition: color 0.15s ease-in-out;
+    transition: $transition-fast;
+    font-family: $font-body;
 
     &:hover {
-      color: white;
+      color: $accent-teal;
       text-decoration: none;
+    }
+  }
+}
+
+// Fix parent container to allow full-width footer
+.td-outer {
+  padding: 0 !important;
+}
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+// Custom MCP Footer with professional aesthetics and fixed spacing
+.mcp-footer {
+  background: $bg-dark !important;
+  color: $text-muted;
+  padding: $spacing-3xl $spacing-xl 0 $spacing-xl !important;
+  margin: 0 !important;
+  position: relative;
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(90deg, $accent-teal 0%, $primary-blue-light 50%, $accent-indigo 100%);
+  border-image-slice: 1;
+
+  // Subtle background pattern
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      linear-gradient(rgba($accent-teal, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($accent-teal, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .container-fluid {
+    position: relative;
+    z-index: $z-index-base;
+    max-width: 1400px;
+    padding: 0 $spacing-xl !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+// Footer main content
+.footer-main {
+  margin-bottom: $spacing-xl;
+}
+
+// Footer columns
+.footer-column {
+  h5 {
+    color: $text-primary;
+    font-family: $font-header;
+    font-weight: 700;
+    font-size: $font-size-base;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: $spacing-md;
+    position: relative;
+    padding-bottom: $spacing-xs;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: $underline-width-sm;
+      height: $underline-height;
+      background: $primary-gradient;
+      border-radius: 2px;
+    }
+  }
+}
+
+// Footer brand (first column)
+.footer-brand {
+  margin-bottom: $spacing-md;
+
+  .footer-logo {
+    font-family: $font-header;
+    font-size: $font-size-footer-logo;
+    font-weight: 800;
+    color: $text-primary;
+    margin-bottom: $spacing-xs;
+    letter-spacing: -0.02em;
+
+    background: linear-gradient(135deg, $accent-teal 0%, $primary-blue-light 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .footer-tagline {
+    font-size: $font-size-sm;
+    color: $primary-blue-light;
+    font-weight: 500;
+    margin: 0;
+    font-family: $font-body;
+  }
+}
+
+.footer-description {
+  font-size: $font-size-custom-sm;
+  line-height: 1.6;
+  color: $text-muted;
+  margin-bottom: $spacing-md;
+  font-family: $font-body;
+}
+
+// Footer badges
+.footer-badges {
+  display: flex;
+  gap: $spacing-xs;
+  margin-top: $spacing-md;
+
+  .badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: 50px;
+    font-size: $font-size-xs;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: $font-body;
+  }
+
+  .badge-gpl {
+    background: rgba($accent-teal, 0.15);
+    color: $accent-teal;
+    border: 1px solid rgba($accent-teal, 0.3);
+  }
+
+  .badge-free-software {
+    background: rgba($primary-blue-light, 0.15);
+    color: $primary-blue-light;
+    border: 1px solid rgba($primary-blue-light, 0.3);
+  }
+}
+
+// Footer links
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin-bottom: $spacing-sm;
+
+    a {
+      color: $text-muted;
+      font-size: $font-size-custom-sm;
+      font-weight: 400;
+      transition: $transition-fast;
+      display: inline-flex;
+      align-items: center;
+      font-family: $font-body;
+
+      i {
+        margin-right: $spacing-xs;
+        color: $primary-blue-light;
+        transition: $transition-fast;
+        font-size: $font-size-custom-xs;
+      }
+
+      &:hover {
+        color: $accent-teal;
+        text-decoration: none;
+        transform: translateX(3px);
+
+        i {
+          color: $accent-teal;
+        }
+      }
+    }
+  }
+}
+
+// Footer heading
+.footer-heading {
+  color: $text-primary;
+  font-family: $font-header;
+  font-weight: 700;
+  font-size: $font-size-base;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: $spacing-md;
+  position: relative;
+  padding-bottom: $spacing-xs;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: $underline-width-sm;
+    height: $underline-height;
+    background: $primary-gradient;
+    border-radius: 2px;
+  }
+}
+
+// Project stats in footer
+.footer-project-stats {
+  margin-bottom: $spacing-md;
+
+  .project-stat {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-sm;
+    font-size: $font-size-custom-sm;
+    color: $text-muted;
+    font-family: $font-body;
+
+    i {
+      font-size: $font-size-custom-lg;
+
+      &.terminal-green { color: $accent-teal; }
+      &.terminal-cyan { color: $primary-blue-light; }
+      &.terminal-blue { color: $primary-blue-light; }
+      &.terminal-purple { color: $accent-indigo; }
+    }
+  }
+}
+
+// Social links
+.footer-social-links {
+  display: flex;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+
+  .social-link {
+    width: $icon-container-sm;
+    height: $icon-container-sm;
+    border-radius: 50%;
+    background: rgba($accent-teal, 0.1);
+    border: 1px solid rgba($accent-teal, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $accent-teal;
+    font-size: $font-size-lg;
+    transition: $transition-base;
+
+    &:hover {
+      background: rgba($accent-teal, 0.2);
+      border-color: rgba($accent-teal, 0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba($accent-teal, 0.3);
+    }
+
+    &:nth-child(2) {
+      background: rgba($primary-blue-light, 0.1);
+      border-color: rgba($primary-blue-light, 0.3);
+      color: $primary-blue-light;
+
+      &:hover {
+        background: rgba($primary-blue-light, 0.2);
+        border-color: rgba($primary-blue-light, 0.5);
+        box-shadow: 0 5px 15px rgba($primary-blue-light, 0.3);
+      }
+    }
+  }
+}
+
+// Footer divider
+.footer-divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba($accent-teal, 0.3) 20%,
+    rgba($primary-blue-light, 0.3) 50%,
+    rgba($accent-indigo, 0.3) 80%,
+    transparent 100%
+  );
+  margin: $spacing-xl 0 $spacing-lg 0;
+}
+
+// Footer bottom - Fixed padding to eliminate white space
+.footer-bottom {
+  padding: $spacing-lg $spacing-xl $spacing-md $spacing-xl !important;
+  margin: 0 !important;
+  background: $bg-dark !important;
+
+  p {
+    margin: 0;
+    font-size: $font-size-sm;
+    color: $text-muted;
+    font-family: $font-body;
+  }
+}
+
+// Copyright section
+.footer-copyright {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+
+  .copyright-text {
+    color: $text-muted;
+  }
+
+  .copyright-separator {
+    color: rgba($accent-teal, 0.5);
+  }
+
+  .license-link {
+    color: $primary-blue-light;
+    font-weight: 500;
+    transition: $transition-fast;
+
+    i {
+      margin-right: 0.25rem;
+    }
+
+    &:hover {
+      color: $accent-teal;
+      text-decoration: none;
+    }
+  }
+}
+
+// Made with section
+.footer-made-with {
+  color: $text-muted;
+
+  .love-icon {
+    color: $color-error;
+    font-weight: 700;
+    font-size: $font-size-base;
+    display: inline-block;
+    animation: pulse $animation-duration-slow ease-in-out infinite;
+  }
+
+  .free-software-link {
+    color: $accent-teal;
+    font-weight: 600;
+    transition: $transition-fast;
+
+    &:hover {
+      color: $primary-blue-light;
+      text-decoration: none;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+// Terminal line decoration at bottom
+.footer-terminal-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: $primary-gradient;
+  box-shadow: 0 0 10px rgba($accent-teal, 0.5);
+}
+
+// Responsive footer
+@media (max-width: 991px) {
+  .mcp-footer {
+    padding: $spacing-2xl 0 $spacing-lg 0;
+
+    .container-fluid {
+      padding: 0 $spacing-md;
+    }
+  }
+
+  .footer-column {
+    margin-bottom: $spacing-xl;
+
+    &:last-child {
+      margin-bottom: $spacing-md;
+    }
+  }
+
+  .footer-info {
+    .footer-social-links {
+      justify-content: center;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .mcp-footer {
+    padding: $spacing-xl 0 $spacing-md 0;
+
+    .container-fluid {
+      padding: 0 $spacing-sm;
+    }
+  }
+
+  .footer-brand .footer-logo {
+    font-size: $font-size-xl;
+    text-align: center;
+  }
+
+  .footer-brand .footer-tagline {
+    text-align: center;
+  }
+
+  .footer-description {
+    text-align: center;
+  }
+
+  .footer-badges {
+    justify-content: center;
+  }
+
+  .footer-column h5,
+  .footer-heading {
+    text-align: center;
+
+    &::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .footer-links {
+    text-align: center;
+
+    li a {
+      justify-content: center;
+    }
+  }
+
+  .footer-project-stats {
+    .project-stat {
+      justify-content: center;
+    }
+  }
+
+  .footer-social-links {
+    justify-content: center;
+  }
+
+  .footer-bottom {
+    text-align: center;
+
+    .col-md-6 {
+      text-align: center !important;
+    }
+  }
+
+  .footer-copyright {
+    justify-content: center;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    .copyright-separator {
+      display: none;
     }
   }
 }
@@ -777,23 +1675,8 @@ pre {
     }
   }
 
-  .installation-method {
-    background: rgba($terminal-bg-light, 0.5) !important;
-    border-color: rgba($terminal-green, 0.3) !important;
-    color: $terminal-text !important;
-
-    h4 {
-      color: $terminal-text !important;
-
-      i {
-        color: $terminal-green !important;
-      }
-    }
-
-    .text-muted {
-      color: $terminal-text-muted !important;
-    }
-  }
+  // .installation-method dark mode override disabled - using universal gradient for now
+  // Will be re-enabled later for proper light/dark mode support
 
   .section-title {
     color: white !important;
@@ -808,60 +1691,117 @@ pre {
   }
 }
 
-// Enhanced syntax highlighting with dark mode support
+// Enhanced syntax highlighting with dark mode support and copy button
 .highlight {
   position: relative;
   margin: 2rem 0;
+  border-radius: $border-radius-lg;
+  background: #1a1f2e !important; // Slightly lighter than main dark for distinction
 
-  pre {
-    background: $terminal-bg-dark !important;
-    border: 1px solid rgba($terminal-green, 0.2);
-    border-radius: $border-radius-lg;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-    position: relative;
-    overflow-x: auto;
-    padding: 1.5rem !important;
+  // Copy button container
+  .copy-button-wrapper {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: $z-index-dropdown;
+  }
 
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, $terminal-green 0%, $terminal-cyan 100%);
-      border-radius: $border-radius-lg $border-radius-lg 0 0;
+  .copy-button {
+    background: rgba($accent-teal, $opacity-soft);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba($accent-teal, $opacity-visible);
+    color: $accent-teal;
+    padding: 0.5rem 0.875rem;
+    border-radius: $border-radius;
+    font-size: $font-size-custom-xs;
+    font-weight: 600;
+    font-family: $font-body;
+    cursor: pointer;
+    transition: $transition-fast;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, $opacity-medium);
+
+    i {
+      font-size: $font-size-custom-sm;
     }
 
-    code {
-      font-family: $font-mono;
-      font-size: 0.9rem;
-      line-height: 1.7;
-      color: $terminal-text !important;
+    &:hover {
+      background: rgba($accent-teal, 0.25);
+      border-color: rgba($accent-teal, 0.5);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba($accent-teal, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &.copied {
+      background: rgba($primary-blue-light, 0.2);
+      border-color: rgba($primary-blue-light, 0.4);
+      color: $primary-blue-light;
     }
   }
 
-  // Dark theme syntax highlighting (default)
-  .c { color: #6b7280 !important; } // Comments
-  .k { color: #8b5cf6 !important; } // Keywords
-  .s { color: $terminal-green !important; } // Strings
-  .m { color: #f59e0b !important; } // Numbers
-  .o { color: $terminal-cyan !important; } // Operators
-  .nb { color: $terminal-blue !important; } // Built-ins
-  .nf { color: #f472b6 !important; } // Functions
-  .sh { color: #ec4899 !important; } // Shell prompts (#)
-  .c1 { color: #6b7280 !important; } // Single line comments
-  .cm { color: #6b7280 !important; } // Multi-line comments
-  .cp { color: #8b5cf6 !important; } // Preprocessor
-  .kn { color: #8b5cf6 !important; } // Keywords namespace
-  .kc { color: #f59e0b !important; } // Keywords constant
-  .kt { color: $terminal-cyan !important; } // Keywords type
-  .nt { color: #f472b6 !important; } // Name tag
-  .na { color: $terminal-blue !important; } // Name attribute
-  .nv { color: #ec4899 !important; } // Name variable
-  .s1 { color: $terminal-green !important; } // String single quote
-  .s2 { color: $terminal-green !important; } // String double quote
-  .se { color: #f59e0b !important; } // String escape
+  // Hide Docsy's default copy button - we use our custom one
+  .td-click-to-copy,
+  .click-to-copy {
+    display: none !important;
+  }
+
+  pre {
+    background: #1a1f2e !important; // Matches parent for seamless look
+    border: 1px solid rgba(100, 116, 139, 0.2);  // Subtle gray border instead of teal
+    border-radius: $border-radius-lg;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow-x: auto;
+    padding: 1.5rem !important; // Uniform padding - copy button floats above
+    margin: 0 !important;
+
+    code {
+      font-family: $font-mono;
+      font-size: $font-size-custom-sm;
+      line-height: 1.8;
+      color: #e2e8f0 !important; // Slightly softer white for better readability
+      display: block;
+    }
+  }
+
+  // Dark theme syntax highlighting with improved contrast (default)
+  .c { color: $syntax-dark-comment !important; } // Comments - lighter gray for better visibility
+  .k { color: $syntax-dark-keyword !important; } // Keywords - lighter purple
+  .s { color: $syntax-dark-string !important; } // Strings - bright teal
+  .m { color: $syntax-dark-number !important; } // Numbers - bright amber
+  .o { color: $syntax-dark-operator !important; } // Operators - bright blue
+  .nb { color: $syntax-dark-builtin !important; } // Built-ins
+  .nf { color: $syntax-dark-function !important; } // Functions - pink
+  .sh { color: $syntax-dark-shell !important; } // Shell prompts (#) - hot pink
+  .c1 { color: $syntax-dark-comment !important; } // Single line comments
+  .cm { color: $syntax-dark-comment !important; } // Multi-line comments
+  .cp { color: $syntax-dark-preprocessor !important; } // Preprocessor
+  .kn { color: $syntax-dark-keyword !important; } // Keywords namespace
+  .kc { color: $syntax-dark-constant !important; } // Keywords constant
+  .kt { color: $syntax-dark-type !important; } // Keywords type
+  .nt { color: $syntax-dark-tag !important; } // Name tag
+  .na { color: $syntax-dark-attribute !important; } // Name attribute
+  .nv { color: $syntax-dark-variable !important; } // Name variable
+  .s1 { color: $syntax-dark-string !important; } // String single quote
+  .s2 { color: $syntax-dark-string !important; } // String double quote
+  .se { color: $syntax-dark-escape !important; } // String escape
+
+  // Line numbers styling
+  .ln, .lineno {
+    color: $syntax-dark-linenumber !important;
+    user-select: none;
+    margin-right: 1rem;
+    padding-right: 1rem;
+    border-right: 1px solid rgba($accent-teal, $opacity-soft);
+  }
 }
 
 // Light mode syntax highlighting adjustments
@@ -873,31 +1813,31 @@ pre {
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
       code {
-        color: #1e293b;
+        color: $syntax-light-text;
       }
     }
 
     // Light mode syntax colors
-    .c { color: #475569; } // Comments
-    .k { color: #7c3aed; } // Keywords
-    .s { color: #059669; } // Strings
-    .m { color: #d97706; } // Numbers
-    .o { color: #0891b2; } // Operators
-    .nb { color: #2563eb; } // Built-ins
-    .nf { color: #dc2626; } // Functions
-    .sh { color: #be185d; } // Shell prompts
-    .c1 { color: #475569; } // Single line comments
-    .cm { color: #475569; } // Multi-line comments
-    .cp { color: #7c3aed; } // Preprocessor
-    .kn { color: #7c3aed; } // Keywords namespace
-    .kc { color: #d97706; } // Keywords constant
-    .kt { color: #0891b2; } // Keywords type
-    .nt { color: #dc2626; } // Name tag
-    .na { color: #2563eb; } // Name attribute
-    .nv { color: #be185d; } // Name variable
-    .s1 { color: #059669; } // String single quote
-    .s2 { color: #059669; } // String double quote
-    .se { color: #d97706; } // String escape
+    .c { color: $syntax-light-comment; } // Comments
+    .k { color: $syntax-light-keyword; } // Keywords
+    .s { color: $syntax-light-string; } // Strings
+    .m { color: $syntax-light-number; } // Numbers
+    .o { color: $syntax-light-operator; } // Operators
+    .nb { color: $syntax-light-builtin; } // Built-ins
+    .nf { color: $syntax-light-function; } // Functions
+    .sh { color: $syntax-light-shell; } // Shell prompts
+    .c1 { color: $syntax-light-comment; } // Single line comments
+    .cm { color: $syntax-light-comment; } // Multi-line comments
+    .cp { color: $syntax-light-preprocessor; } // Preprocessor
+    .kn { color: $syntax-light-keyword; } // Keywords namespace
+    .kc { color: $syntax-light-constant; } // Keywords constant
+    .kt { color: $syntax-light-type; } // Keywords type
+    .nt { color: $syntax-light-tag; } // Name tag
+    .na { color: $syntax-light-attribute; } // Name attribute
+    .nv { color: $syntax-light-variable; } // Name variable
+    .s1 { color: $syntax-light-string; } // String single quote
+    .s2 { color: $syntax-light-string; } // String double quote
+    .se { color: $syntax-light-escape; } // String escape
   }
 }
 

@@ -68,11 +68,21 @@ tasks:
       echo "[+] Code formatted"
 
   vuln:
-    desc: Run vulnerability scanning
+    desc: Run vulnerability scanning (informational)
     cmd: |
       govulncheck ./...
       trivy fs .
       echo "[+] Vulnerability scan completed"
+
+  vuln-check:
+    desc: Check for vulnerabilities and fail if any are found
+    cmd: |
+      echo "[*] Running vulnerability check..."
+      if ! govulncheck ./... 2>&1; then
+        echo "[-] Vulnerabilities found! Fix them before proceeding."
+        exit 1
+      fi
+      echo "[+] No vulnerabilities found"
 
   security:
     desc: Run security analysis

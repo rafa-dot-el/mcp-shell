@@ -24,35 +24,6 @@ import (
 	"github.com/rafa-dot-el/mcp-shell/pkg/config"
 )
 
-func TestConfigValidation(t *testing.T) {
-	// Test configuration validation integration
-	cfg := &config.Config{
-		Verbose:  false,
-		Debug:    false,
-		LogLevel: "info",
-	}
-
-	if !cfg.IsValid() {
-		t.Error("Expected valid config to pass validation")
-	}
-
-	// Test invalid config
-	invalidCfg := &config.Config{
-		Verbose:  true,
-		Debug:    true,
-		LogLevel: "invalid",
-	}
-
-	if invalidCfg.IsValid() {
-		t.Error("Expected invalid config to fail validation")
-	}
-
-	errors := invalidCfg.Validate()
-	if len(errors) == 0 {
-		t.Error("Expected validation errors for invalid config")
-	}
-}
-
 func TestDefaultConfiguration(t *testing.T) {
 	cfg := config.DefaultConfig()
 
@@ -60,16 +31,8 @@ func TestDefaultConfiguration(t *testing.T) {
 		t.Fatal("DefaultConfig() returned nil")
 	}
 
-	if cfg.LogLevel != "info" {
-		t.Errorf("Expected default log level 'info', got '%s'", cfg.LogLevel)
-	}
-
-	if cfg.Verbose {
-		t.Error("Expected default verbose to be false")
-	}
-
-	if cfg.Debug {
-		t.Error("Expected default debug to be false")
+	if cfg.Logging.Level != "info" {
+		t.Errorf("Expected default log level 'info', got '%s'", cfg.Logging.Level)
 	}
 
 	// Test that default config is valid

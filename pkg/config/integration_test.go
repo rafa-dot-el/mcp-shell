@@ -23,44 +23,8 @@ package config
 
 import (
 	"os"
-	"path/filepath"
 	"testing"
 )
-
-func TestConfigValidation_Integration(t *testing.T) {
-	// Test configuration validation in a realistic scenario
-	tmpDir := t.TempDir()
-
-	// Create a config file with invalid content
-	configPath := filepath.Join(tmpDir, "config.yaml")
-	invalidConfig := `
-verbose: true
-debug: true
-log_level: "INVALID_LEVEL"
-`
-
-	err := os.WriteFile(configPath, []byte(invalidConfig), 0644)
-	if err != nil {
-		t.Fatalf("Failed to write config file: %v", err)
-	}
-
-	// Test that validation catches multiple errors
-	config := &Config{
-		Verbose:  true,
-		Debug:    true,
-		LogLevel: "INVALID_LEVEL",
-	}
-
-	errors := config.Validate()
-	if len(errors) != 2 {
-		t.Errorf("Expected 2 validation errors, got %d: %v", len(errors), errors)
-	}
-
-	// Test that the config is marked as invalid
-	if config.IsValid() {
-		t.Error("Expected config to be invalid")
-	}
-}
 
 func TestConfigDirectory_Integration(t *testing.T) {
 	// Test the full config directory creation workflow

@@ -1,0 +1,99 @@
+# Example MCP Shell Configuration
+# This file demonstrates all available configuration options
+
+mcp:
+  name: "mcp-shell"
+  version: "1.0.0"
+  transport: stdio
+
+# Simple command aliases with no arguments
+aliases:
+  - name: "git-status"
+    description: "Show git repository status"
+    command: "git status --short --branch"
+
+  - name: "docker-ps"
+    description: "List running containers"
+    command: "docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
+
+  - name: "disk-usage"
+    description: "Show disk usage summary"
+    command: "df -h | grep -E '^/dev/|^Filesystem'"
+
+# Scripts with parameters
+scripts:
+  - name: "Database Backup"
+    description: "Backup PostgreSQL database with compression"
+    path: "scripts/db/backup.sh"
+    interpreter: "bash"
+    parameters:
+      database_name:
+        description: "Name of the database to backup"
+        required: true
+        setter: "--db {}"
+      output_dir:
+        description: "Output directory for backup files"
+        required: false
+        default: "/tmp/backups"
+        setter: "--output {}"
+      compression:
+        description: "Compression level (1-9)"
+        required: false
+        default: "6"
+        valid_values: ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        setter: "--compression {}"
+
+  - name: "System Monitor"
+    description: "Monitor system resources"
+    path: "scripts/monitoring/system-monitor.py"
+    interpreter: "python3"
+    parameters:
+      interval:
+        description: "Monitoring interval in seconds"
+        required: false
+        default: "5"
+        setter: "--interval {}"
+      duration:
+        description: "Total monitoring duration in seconds"
+        required: false
+        default: "60"
+        setter: "--duration {}"
+
+# Script folders for discovery
+script_folders:
+  - name: "database-scripts"
+    description: "Database maintenance and backup scripts"
+    path: "scripts/db/*.sh"
+    default_interpreter: "bash"
+
+  - name: "deployment-scripts"
+    description: "Deployment and CI/CD scripts"
+    path: "scripts/deploy/**/*.sh"
+    default_interpreter: "bash"
+
+  - name: "python-utilities"
+    description: "Python utility scripts"
+    path: "scripts/utils/*.py"
+    default_interpreter: "python3"
+
+# Execution configuration
+execution:
+  max_parallel_jobs: 5
+  default_timeout: 300  # seconds
+  log_directory: "/var/log/mcp-shell"
+  allow_background: true
+
+# Security configuration
+security:
+  allow_script_creation: false
+  allowed_interpreters:
+    - bash
+    - python3
+    - perl
+    - ruby
+  script_creation_path: "user-scripts/"
+
+# Logging configuration
+logging:
+  level: "info"  # trace, debug, info, warn, error, fatal, panic
+  format: "text"  # text or json

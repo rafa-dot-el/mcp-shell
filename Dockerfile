@@ -41,4 +41,4 @@ LABEL org.opencontainers.image.description="MCP Shell Server for serving shell A
 LABEL org.opencontainers.image.url="https://github.com/rafa-dot-el/mcp-shell"
 LABEL org.opencontainers.image.source="https://github.com/rafa-dot-el/mcp-shell"
 LABEL org.opencontainers.image.licenses="GPL-3.0"
-LABEL org.opencontainers.image.author="Rafael <<>>"
+LABEL org.opencontainers.image.author="Rafael <rafa@members.fsf.org>"

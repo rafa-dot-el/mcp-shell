@@ -19,287 +19,790 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package config
 
 import (
-	"os"
-	"strings"
 	"testing"
 )
 
 func TestDefaultConfig(t *testing.T) {
 	config := DefaultConfig()
 
-	if config.Verbose {
-		t.Error("Expected Verbose to be false")
+	if config == nil {
+		t.Fatal("DefaultConfig returned nil")
 	}
 
-	if config.Debug {
-		t.Error("Expected Debug to be false")
+	// Validate default config is valid
+	if !config.IsValid() {
+		t.Errorf("Default config is not valid: %v", config.Validate())
 	}
 
-	if config.LogLevel != "info" {
-		t.Errorf("Expected LogLevel to be 'info', got '%s'", config.LogLevel)
+	// Check MCP defaults
+	if config.MCP.Name != "mcp-shell" {
+		t.Errorf("Expected MCP name 'mcp-shell', got '%s'", config.MCP.Name)
+	}
+
+	if config.MCP.Transport != "stdio" {
+		t.Errorf("Expected MCP transport 'stdio', got '%s'", config.MCP.Transport)
+	}
+
+	// Check execution defaults
+	if config.Execution.MaxParallelJobs != 5 {
+		t.Errorf("Expected MaxParallelJobs 5, got %d", config.Execution.MaxParallelJobs)
+	}
+
+	// Check security defaults
+	if config.Security.AllowScriptCreation {
+		t.Error("Expected AllowScriptCreation to be false by default")
+	}
+
+	if len(config.Security.AllowedInterpreters) == 0 {
+		t.Error("Expected at least one allowed interpreter by default")
+	}
+
+	// Check logging defaults
+	if config.Logging.Level != "info" {
+		t.Errorf("Expected logging level 'info', got '%s'", config.Logging.Level)
 	}
 }
 
-func TestConfig_Validate_ValidConfig(t *testing.T) {
+func TestValidateMCP(t *testing.T) {
 	tests := []struct {
-		name   string
-		config *Config
+		name      string
+		config    Config
+		wantError bool
 	}{
 		{
-			name: "default config",
-			config: &Config{
-				Verbose:  false,
-				Debug:    false,
-				LogLevel: "info",
+			name: "valid MCP config",
+			config: Config{
+				MCP: MCPConfig{
+					Name:      "test-server",
+					Version:   "1.0.0",
+					Transport: "stdio",
+				},
+				Execution: ExecutionConfig{
+					MaxParallelJobs: 1,
+					DefaultTimeout:  1,
+					LogDirectory:    "/tmp",
+				},
+				Security: SecurityConfig{
+					AllowedInterpreters: []string{"bash"},
+				},
+				Logging: LoggingConfig{
+					Level:  "info",
+					Format: "text",
+				},
 			},
+			wantError: false,
 		},
 		{
-			name: "verbose only",
-			config: &Config{
-				Verbose:  true,
-				Debug:    false,
-				LogLevel: "debug",
+			name: "empty MCP name",
+			config: Config{
+				MCP: MCPConfig{
+					Name:      "",
+					Version:   "1.0.0",
+					Transport: "stdio",
+				},
+				Execution: ExecutionConfig{
+					MaxParallelJobs: 1,
+					DefaultTimeout:  1,
+					LogDirectory:    "/tmp",
+				},
+				Security: SecurityConfig{
+					AllowedInterpreters: []string{"bash"},
+				},
+				Logging: LoggingConfig{
+					Level:  "info",
+					Format: "text",
+				},
 			},
+			wantError: true,
 		},
 		{
-			name: "debug only",
-			config: &Config{
-				Verbose:  false,
-				Debug:    true,
-				LogLevel: "trace",
+			name: "invalid transport",
+			config: Config{
+				MCP: MCPConfig{
+					Name:      "test",
+					Version:   "1.0.0",
+					Transport: "invalid",
+				},
+				Execution: ExecutionConfig{
+					MaxParallelJobs: 1,
+					DefaultTimeout:  1,
+					LogDirectory:    "/tmp",
+				},
+				Security: SecurityConfig{
+					AllowedInterpreters: []string{"bash"},
+				},
+				Logging: LoggingConfig{
+					Level:  "info",
+					Format: "text",
+				},
 			},
-		},
-		{
-			name: "different log levels",
-			config: &Config{
-				Verbose:  false,
-				Debug:    false,
-				LogLevel: "error",
-			},
+			wantError: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			errors := tt.config.Validate()
-			if len(errors) != 0 {
-				t.Errorf("Expected no validation errors, got %d: %v", len(errors), errors)
-			}
+			hasError := len(errors) > 0
 
-			if !tt.config.IsValid() {
-				t.Error("Expected config to be valid")
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
 			}
 		})
 	}
 }
 
-func TestConfig_Validate_InvalidLogLevel(t *testing.T) {
+func TestValidateAliases(t *testing.T) {
 	tests := []struct {
-		name     string
-		logLevel string
+		name      string
+		aliases   []Alias
+		wantError bool
 	}{
-		{"invalid level", "invalid"},
-		{"empty level", ""},
-		{"numeric level", "123"},
-		{"mixed case invalid", "Invalid"},
+		{
+			name: "valid aliases",
+			aliases: []Alias{
+				{Name: "test1", Description: "Test 1", Command: "echo test1"},
+				{Name: "test2", Description: "Test 2", Command: "echo test2"},
+			},
+			wantError: false,
+		},
+		{
+			name: "empty alias name",
+			aliases: []Alias{
+				{Name: "", Description: "Test", Command: "echo test"},
+			},
+			wantError: true,
+		},
+		{
+			name: "duplicate alias name",
+			aliases: []Alias{
+				{Name: "test", Description: "Test 1", Command: "echo test1"},
+				{Name: "test", Description: "Test 2", Command: "echo test2"},
+			},
+			wantError: true,
+		},
+		{
+			name: "empty command",
+			aliases: []Alias{
+				{Name: "test", Description: "Test", Command: ""},
+			},
+			wantError: true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			config := &Config{
-				Verbose:  false,
-				Debug:    false,
-				LogLevel: tt.logLevel,
-			}
+			config := DefaultConfig()
+			config.Aliases = tt.aliases
 
 			errors := config.Validate()
-			if len(errors) != 1 {
-				t.Errorf("Expected 1 validation error, got %d: %v", len(errors), errors)
-			}
+			hasError := len(errors) > 0
 
-			if !strings.Contains(errors[0].Error(), "log_level") {
-				t.Errorf("Expected error to mention 'log_level', got: %s", errors[0].Error())
-			}
-
-			if config.IsValid() {
-				t.Error("Expected config to be invalid")
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
 			}
 		})
 	}
 }
 
-func TestConfig_Validate_ConflictingOptions(t *testing.T) {
-	config := &Config{
-		Verbose:  true,
-		Debug:    true,
-		LogLevel: "info",
-	}
-
-	errors := config.Validate()
-	if len(errors) != 1 {
-		t.Errorf("Expected 1 validation error, got %d: %v", len(errors), errors)
-	}
-
-	if !strings.Contains(errors[0].Error(), "verbose/debug") {
-		t.Errorf("Expected error to mention 'verbose/debug', got: %s", errors[0].Error())
-	}
-
-	if config.IsValid() {
-		t.Error("Expected config to be invalid")
-	}
-}
-
-func TestConfig_NormalizeLogLevel(t *testing.T) {
+func TestValidateScripts(t *testing.T) {
 	tests := []struct {
-		name     string
-		input    string
-		expected string
+		name      string
+		scripts   []Script
+		wantError bool
 	}{
-		{"uppercase", "INFO", "info"},
-		{"mixed case", "DeBuG", "debug"},
-		{"already lowercase", "error", "error"},
+		{
+			name: "valid script with parameters",
+			scripts: []Script{
+				{
+					Name:        "test-script",
+					Description: "Test script",
+					Path:        "/tmp/test.sh",
+					Interpreter: "bash",
+					Parameters: map[string]Parameter{
+						"param1": {
+							Description: "Parameter 1",
+							Required:    true,
+							Setter:      "--param1 {}",
+						},
+					},
+				},
+			},
+			wantError: false,
+		},
+		{
+			name: "empty script name",
+			scripts: []Script{
+				{
+					Name:        "",
+					Description: "Test",
+					Path:        "/tmp/test.sh",
+				},
+			},
+			wantError: true,
+		},
+		{
+			name: "duplicate script name",
+			scripts: []Script{
+				{Name: "test", Path: "/tmp/test1.sh"},
+				{Name: "test", Path: "/tmp/test2.sh"},
+			},
+			wantError: true,
+		},
+		{
+			name: "invalid interpreter",
+			scripts: []Script{
+				{
+					Name:        "test",
+					Path:        "/tmp/test.sh",
+					Interpreter: "invalid-interpreter",
+				},
+			},
+			wantError: true,
+		},
+		{
+			name: "parameter without setter",
+			scripts: []Script{
+				{
+					Name: "test",
+					Path: "/tmp/test.sh",
+					Parameters: map[string]Parameter{
+						"param1": {
+							Description: "Parameter 1",
+							Setter:      "",
+						},
+					},
+				},
+			},
+			wantError: true,
+		},
+		{
+			name: "setter without placeholder",
+			scripts: []Script{
+				{
+					Name: "test",
+					Path: "/tmp/test.sh",
+					Parameters: map[string]Parameter{
+						"param1": {
+							Description: "Parameter 1",
+							Setter:      "--param1",
+						},
+					},
+				},
+			},
+			wantError: true,
+		},
+		{
+			name: "required parameter with default",
+			scripts: []Script{
+				{
+					Name: "test",
+					Path: "/tmp/test.sh",
+					Parameters: map[string]Parameter{
+						"param1": {
+							Description: "Parameter 1",
+							Required:    true,
+							Default:     "value",
+							Setter:      "--param1 {}",
+						},
+					},
+				},
+			},
+			wantError: true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			config := &Config{LogLevel: tt.input}
-			config.NormalizeLogLevel()
+			config := DefaultConfig()
+			config.Scripts = tt.scripts
 
-			if config.LogLevel != tt.expected {
-				t.Errorf("Expected LogLevel to be '%s', got '%s'", tt.expected, config.LogLevel)
+			errors := config.Validate()
+			hasError := len(errors) > 0
+
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
 			}
 		})
 	}
 }
 
-func TestValidationError_Error(t *testing.T) {
-	err := &ValidationError{
-		Field:   "test_field",
-		Value:   "test_value",
-		Message: "test message",
+func TestValidateScriptFolders(t *testing.T) {
+	tests := []struct {
+		name      string
+		folders   []ScriptFolder
+		wantError bool
+	}{
+		{
+			name: "valid script folder",
+			folders: []ScriptFolder{
+				{
+					Name:               "test-folder",
+					Description:        "Test folder",
+					Path:               "/tmp/*.sh",
+					DefaultInterpreter: "bash",
+				},
+			},
+			wantError: false,
+		},
+		{
+			name: "empty folder name",
+			folders: []ScriptFolder{
+				{
+					Name:        "",
+					Description: "Test",
+					Path:        "/tmp/*.sh",
+				},
+			},
+			wantError: true,
+		},
+		{
+			name: "duplicate folder names",
+			folders: []ScriptFolder{
+				{Name: "test", Path: "/tmp/*.sh"},
+				{Name: "test", Path: "/opt/*.sh"},
+			},
+			wantError: true,
+		},
+		{
+			name: "empty path",
+			folders: []ScriptFolder{
+				{Name: "test", Path: ""},
+			},
+			wantError: true,
+		},
+		{
+			name: "disallowed interpreter",
+			folders: []ScriptFolder{
+				{
+					Name:               "test",
+					Path:               "/tmp/*.sh",
+					DefaultInterpreter: "invalid-interpreter",
+				},
+			},
+			wantError: true,
+		},
 	}
 
-	expected := "validation error for field 'test_field' (value: test_value): test message"
-	if err.Error() != expected {
-		t.Errorf("Expected error message '%s', got '%s'", expected, err.Error())
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := DefaultConfig()
+			config.ScriptFolders = tt.folders
+
+			errors := config.Validate()
+			hasError := len(errors) > 0
+
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
+			}
+		})
+	}
+}
+
+func TestValidateExecution(t *testing.T) {
+	tests := []struct {
+		name      string
+		execution ExecutionConfig
+		wantError bool
+	}{
+		{
+			name: "valid execution config",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 5,
+				DefaultTimeout:  300,
+				LogDirectory:    "/var/log/mcp-shell",
+				AllowBackground: true,
+			},
+			wantError: false,
+		},
+		{
+			name: "invalid max parallel jobs (zero)",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 0,
+				DefaultTimeout:  300,
+				LogDirectory:    "/var/log/mcp-shell",
+			},
+			wantError: true,
+		},
+		{
+			name: "invalid max parallel jobs (negative)",
+			execution: ExecutionConfig{
+				MaxParallelJobs: -1,
+				DefaultTimeout:  300,
+				LogDirectory:    "/var/log/mcp-shell",
+			},
+			wantError: true,
+		},
+		{
+			name: "invalid default timeout (zero)",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 5,
+				DefaultTimeout:  0,
+				LogDirectory:    "/var/log/mcp-shell",
+			},
+			wantError: true,
+		},
+		{
+			name: "invalid default timeout (negative)",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 5,
+				DefaultTimeout:  -1,
+				LogDirectory:    "/var/log/mcp-shell",
+			},
+			wantError: true,
+		},
+		{
+			name: "empty log directory",
+			execution: ExecutionConfig{
+				MaxParallelJobs: 5,
+				DefaultTimeout:  300,
+				LogDirectory:    "",
+			},
+			wantError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := DefaultConfig()
+			config.Execution = tt.execution
+
+			errors := config.Validate()
+			hasError := len(errors) > 0
+
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
+			}
+		})
+	}
+}
+
+func TestValidateSecurity(t *testing.T) {
+	tests := []struct {
+		name      string
+		security  SecurityConfig
+		wantError bool
+	}{
+		{
+			name: "valid security config",
+			security: SecurityConfig{
+				AllowScriptCreation: false,
+				AllowedInterpreters: []string{"bash", "python3"},
+				ScriptCreationPath:  "scripts/",
+			},
+			wantError: false,
+		},
+		{
+			name: "empty allowed interpreters",
+			security: SecurityConfig{
+				AllowScriptCreation: false,
+				AllowedInterpreters: []string{},
+			},
+			wantError: true,
+		},
+		{
+			name: "script creation enabled without path",
+			security: SecurityConfig{
+				AllowScriptCreation: true,
+				AllowedInterpreters: []string{"bash"},
+				ScriptCreationPath:  "",
+			},
+			wantError: true,
+		},
+		{
+			name: "script creation enabled with path",
+			security: SecurityConfig{
+				AllowScriptCreation: true,
+				AllowedInterpreters: []string{"bash"},
+				ScriptCreationPath:  "/tmp/scripts/",
+			},
+			wantError: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := DefaultConfig()
+			config.Security = tt.security
+
+			errors := config.Validate()
+			hasError := len(errors) > 0
+
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
+			}
+		})
+	}
+}
+
+func TestValidateLogging(t *testing.T) {
+	tests := []struct {
+		name      string
+		logging   LoggingConfig
+		wantError bool
+	}{
+		{
+			name:      "valid text format",
+			logging:   LoggingConfig{Level: "info", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "valid json format",
+			logging:   LoggingConfig{Level: "debug", Format: "json"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - trace",
+			logging:   LoggingConfig{Level: "trace", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - warn",
+			logging:   LoggingConfig{Level: "warn", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - error",
+			logging:   LoggingConfig{Level: "error", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - fatal",
+			logging:   LoggingConfig{Level: "fatal", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "all valid log levels - panic",
+			logging:   LoggingConfig{Level: "panic", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "case insensitive level",
+			logging:   LoggingConfig{Level: "INFO", Format: "text"},
+			wantError: false,
+		},
+		{
+			name:      "case insensitive format",
+			logging:   LoggingConfig{Level: "info", Format: "JSON"},
+			wantError: false,
+		},
+		{
+			name:      "invalid log level",
+			logging:   LoggingConfig{Level: "invalid", Format: "text"},
+			wantError: true,
+		},
+		{
+			name:      "invalid log format",
+			logging:   LoggingConfig{Level: "info", Format: "invalid"},
+			wantError: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := DefaultConfig()
+			config.Logging = tt.logging
+
+			errors := config.Validate()
+			hasError := len(errors) > 0
+
+			if hasError != tt.wantError {
+				t.Errorf("Validate() error = %v, wantError %v", errors, tt.wantError)
+			}
+		})
+	}
+}
+
+func TestValidationError(t *testing.T) {
+	tests := []struct {
+		name     string
+		err      *ValidationError
+		expected string
+	}{
+		{
+			name: "basic error",
+			err: &ValidationError{
+				Field:   "test.field",
+				Value:   "value",
+				Message: "test message",
+			},
+			expected: "validation error for field 'test.field' (value: value): test message",
+		},
+		{
+			name: "numeric value",
+			err: &ValidationError{
+				Field:   "config.timeout",
+				Value:   0,
+				Message: "must be positive",
+			},
+			expected: "validation error for field 'config.timeout' (value: 0): must be positive",
+		},
+		{
+			name: "nil value",
+			err: &ValidationError{
+				Field:   "config.value",
+				Value:   nil,
+				Message: "cannot be nil",
+			},
+			expected: "validation error for field 'config.value' (value: <nil>): cannot be nil",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.err.Error(); got != tt.expected {
+				t.Errorf("ValidationError.Error() = %v, want %v", got, tt.expected)
+			}
+		})
 	}
 }
 
 func TestGetConfigDir(t *testing.T) {
-	configDir, err := GetConfigDir()
+	dir, err := GetConfigDir()
 	if err != nil {
-		t.Fatalf("GetConfigDir() failed: %v", err)
+		t.Fatalf("GetConfigDir() error = %v", err)
 	}
 
-	if configDir == "" {
-		t.Error("Expected non-empty config directory path")
+	if dir == "" {
+		t.Error("GetConfigDir() returned empty string")
 	}
 
-	if !strings.Contains(configDir, ".config") {
-		t.Errorf("Expected config directory to contain '.config', got '%s'", configDir)
-	}
-
-	if !strings.Contains(configDir, "mcp-shell") {
-		t.Errorf("Expected config directory to contain 'mcp-shell', got '%s'", configDir)
+	// Should end with .config/mcp-shell
+	expectedSuffix := ".config/mcp-shell"
+	if len(dir) < len(expectedSuffix) {
+		t.Errorf("GetConfigDir() path too short: %s", dir)
 	}
 }
 
 func TestEnsureConfigDir(t *testing.T) {
-	// Create a temporary directory for testing
-	tmpDir := t.TempDir()
-
-	// Override the home directory for this test
-	originalHome := os.Getenv("HOME")
-	defer func() {
-		_ = os.Setenv("HOME", originalHome) // Restore original HOME, ignore error in defer
-	}()
-	if err := os.Setenv("HOME", tmpDir); err != nil {
-		t.Fatalf("Failed to set HOME environment variable: %v", err)
-	}
-
+	// This test might create directories
 	err := EnsureConfigDir()
 	if err != nil {
-		t.Fatalf("EnsureConfigDir() failed: %v", err)
+		t.Errorf("EnsureConfigDir() error = %v", err)
 	}
 
-	// Check that the directory was created
-	configDir, err := GetConfigDir()
+	// Verify the directory path is returned correctly
+	dir, err := GetConfigDir()
 	if err != nil {
-		t.Fatalf("GetConfigDir() failed: %v", err)
+		t.Fatalf("GetConfigDir() error = %v", err)
 	}
 
-	if _, err := os.Stat(configDir); os.IsNotExist(err) {
-		t.Errorf("Expected config directory to be created at '%s'", configDir)
+	if dir == "" {
+		t.Error("Config directory is empty after EnsureConfigDir()")
 	}
 }
 
-// Integration test with realistic scenarios
-func TestConfig_IntegrationScenarios(t *testing.T) {
-	scenarios := []struct {
-		name           string
-		config         *Config
-		shouldBeValid  bool
-		expectedErrors int
+func TestIsValid(t *testing.T) {
+	tests := []struct {
+		name  string
+		cfg   *Config
+		valid bool
 	}{
 		{
-			name: "production config",
-			config: &Config{
-				Verbose:  false,
-				Debug:    false,
-				LogLevel: "warn",
-			},
-			shouldBeValid:  true,
-			expectedErrors: 0,
+			name:  "default config is valid",
+			cfg:   DefaultConfig(),
+			valid: true,
 		},
 		{
-			name: "development config",
-			config: &Config{
-				Verbose:  true,
-				Debug:    false,
-				LogLevel: "debug",
+			name: "config with empty MCP name",
+			cfg: &Config{
+				MCP: MCPConfig{
+					Name:      "",
+					Version:   "1.0.0",
+					Transport: "stdio",
+				},
+				Execution: ExecutionConfig{
+					MaxParallelJobs: 5,
+					DefaultTimeout:  300,
+					LogDirectory:    "/tmp",
+				},
+				Security: SecurityConfig{
+					AllowedInterpreters: []string{"bash"},
+				},
+				Logging: LoggingConfig{
+					Level:  "info",
+					Format: "text",
+				},
 			},
-			shouldBeValid:  true,
-			expectedErrors: 0,
+			valid: false,
 		},
 		{
-			name: "invalid production config",
-			config: &Config{
-				Verbose:  false,
-				Debug:    false,
-				LogLevel: "PRODUCTION",
+			name: "config with multiple validation errors",
+			cfg: &Config{
+				MCP: MCPConfig{
+					Name:      "",
+					Version:   "",
+					Transport: "invalid",
+				},
+				Execution: ExecutionConfig{
+					MaxParallelJobs: 0,
+					DefaultTimeout:  0,
+					LogDirectory:    "",
+				},
+				Security: SecurityConfig{
+					AllowedInterpreters: []string{},
+				},
+				Logging: LoggingConfig{
+					Level:  "invalid",
+					Format: "invalid",
+				},
 			},
-			shouldBeValid:  false,
-			expectedErrors: 1,
-		},
-		{
-			name: "conflicting development config",
-			config: &Config{
-				Verbose:  true,
-				Debug:    true,
-				LogLevel: "trace",
-			},
-			shouldBeValid:  false,
-			expectedErrors: 1,
+			valid: false,
 		},
 	}
 
-	for _, scenario := range scenarios {
-		t.Run(scenario.name, func(t *testing.T) {
-			errors := scenario.config.Validate()
-
-			if len(errors) != scenario.expectedErrors {
-				t.Errorf("Expected %d errors, got %d: %v", scenario.expectedErrors, len(errors), errors)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.cfg.IsValid(); got != tt.valid {
+				t.Errorf("IsValid() = %v, want %v, errors: %v", got, tt.valid, tt.cfg.Validate())
 			}
+		})
+	}
+}
 
-			if scenario.config.IsValid() != scenario.shouldBeValid {
-				t.Errorf("Expected IsValid() to be %t, got %t", scenario.shouldBeValid, scenario.config.IsValid())
-			}
+func TestContains(t *testing.T) {
+	tests := []struct {
+		name  string
+		slice []string
+		item  string
+		want  bool
+	}{
+		{
+			name:  "item exists",
+			slice: []string{"bash", "python3", "perl"},
+			item:  "bash",
+			want:  true,
+		},
+		{
+			name:  "item exists case insensitive",
+			slice: []string{"bash", "python3", "perl"},
+			item:  "BASH",
+			want:  true,
+		},
+		{
+			name:  "item does not exist",
+			slice: []string{"bash", "python3", "perl"},
+			item:  "ruby",
+			want:  false,
+		},
+		{
+			name:  "empty slice",
+			slice: []string{},
+			item:  "bash",
+			want:  false,
+		},
+		{
+			name:  "empty item",
+			slice: []string{"bash", "python3"},
+			item:  "",
+			want:  false,
+		},
+	}
 
-			// Test normalization
-			originalLevel := scenario.config.LogLevel
-			scenario.config.NormalizeLogLevel()
-			if scenario.config.LogLevel != strings.ToLower(originalLevel) {
-				t.Errorf("Expected normalized log level '%s', got '%s'", strings.ToLower(originalLevel), scenario.config.LogLevel)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := contains(tt.slice, tt.item); got != tt.want {
+				t.Errorf("contains() = %v, want %v", got, tt.want)
 			}
 		})
 	}

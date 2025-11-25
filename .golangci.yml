@@ -5,9 +5,11 @@
 # Configuration for golangci-lint - Go linters aggregator
 # See: https://golangci-lint.run/usage/configuration/
 
+version: 2
+
 run:
   timeout: 5m
-  tests: true
+  tests: false
 
 linters-settings:
   errcheck:
@@ -106,15 +108,42 @@ issues:
 
   exclude-rules:
     # Exclude some linters from running on test files
-    - path: _test\.go
+    - path: ".*_test\\.go$"
       linters:
         - goconst
         - errcheck
+        - gosec
+        - staticcheck
+        - unparam
 
     # Exclude staticcheck SA9003 (empty branch)
     - linters:
         - staticcheck
       text: "SA9003:"
+
+    # Exclude revive stuttering warnings for established type names
+    - linters:
+        - revive
+      text: "stutters"
+
+    # Exclude gocritic ifElseChain warnings - if-else is clearer for error handling
+    - linters:
+        - gocritic
+      text: "ifElseChain"
+
+    # Exclude goconst for repetitive string usage in configuration/templates
+    - path: "internal/cmd/.*\\.go$"
+      linters:
+        - goconst
+    - path: "pkg/mcp/prompts\\.go$"
+      linters:
+        - goconst
+
+    # Exclude unparam for function signatures designed for future extensibility
+    - path: "pkg/script/executor\\.go$"
+      linters:
+        - unparam
+      text: "buildArguments"
 
 output:
   format: colored-line-number

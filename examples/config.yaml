@@ -1,0 +1,99 @@
+# MCP Shell Example Configuration
+# This is a minimal working configuration demonstrating all features
+
+mcp:
+  name: "mcp-shell-example"
+  version: "1.0.0"
+  transport: "stdio"
+
+# Aliases: Simple one-line commands with no parameters
+aliases:
+  - name: "git-status"
+    description: "Show git repository status"
+    command: "git status -sb"
+
+  - name: "list-files"
+    description: "List files in current directory"
+    command: "ls -lah"
+
+  - name: "disk-usage"
+    description: "Show disk usage summary"
+    command: "df -h"
+
+  - name: "memory-info"
+    description: "Show memory usage"
+    command: "free -h"
+
+# Scripts: Executable files with optional parameters
+scripts:
+  - name: "hello"
+    description: "A simple hello world script"
+    path: "./examples/scripts/hello.sh"
+    interpreter: "bash"
+    parameters:
+      name:
+        description: "Name to greet"
+        required: false
+        default: "World"
+        setter: "{}"
+
+  - name: "system-info"
+    description: "Display system information"
+    path: "./examples/scripts/system-info.sh"
+    interpreter: "bash"
+    parameters:
+      format:
+        description: "Output format (text or json)"
+        required: false
+        default: "text"
+        valid_values: ["text", "json"]
+        setter: "--format {}"
+
+  - name: "backup-example"
+    description: "Example backup script with parameters"
+    path: "./examples/scripts/backup-example.sh"
+    interpreter: "bash"
+    parameters:
+      source:
+        description: "Source directory to backup"
+        required: true
+        setter: "--source {}"
+      destination:
+        description: "Destination for backup"
+        required: true
+        setter: "--dest {}"
+      compress:
+        description: "Enable compression"
+        required: false
+        default: "true"
+        valid_values: ["true", "false"]
+        setter: "--compress {}"
+
+# Script folders: Auto-discover scripts in directories
+script_folders:
+  - name: "example-scripts"
+    description: "Example scripts demonstrating various features"
+    path: "./examples/scripts/*.sh"
+    default_interpreter: "bash"
+
+# Execution settings: Control job execution behavior
+execution:
+  max_parallel_jobs: 5
+  default_timeout: 300  # 5 minutes
+  log_directory: "./examples/logs"
+  allow_background: true
+
+# Security settings: Control what the model can do
+security:
+  allow_script_creation: false  # Set to true to allow model to create new scripts
+  allowed_interpreters:
+    - "bash"
+    - "sh"
+    - "python3"
+    - "perl"
+  script_creation_path: "./examples/user-scripts/"  # Where model can create scripts
+
+# Logging configuration
+logging:
+  level: "info"
+  format: "text"

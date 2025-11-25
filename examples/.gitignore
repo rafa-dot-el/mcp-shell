@@ -1,0 +1,5 @@
+# Job execution logs
+logs/
+
+# User-created scripts
+user-scripts/

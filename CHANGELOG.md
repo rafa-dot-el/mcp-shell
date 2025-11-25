@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GPL3 licensing and proper headers
 
 ### Changed
-- N/A (initial release)
+- Optimized job queue processing from ticker-based polling to event-driven architecture for immediate job execution
 
 ### Deprecated
 - N/A (initial release)

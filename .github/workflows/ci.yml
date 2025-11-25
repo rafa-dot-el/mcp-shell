@@ -12,7 +12,7 @@ on:
     types: [ opened, synchronize, reopened, ready_for_review ]
 
 env:
-  GO_VERSION: '1.23'
+  GO_VERSION: '1.24'
 
 jobs:
   # Build stage
@@ -152,10 +152,11 @@ jobs:
           go-version: '${{ env.GO_VERSION }}'
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v4
+        uses: golangci/golangci-lint-action@v8
         with:
-          version: latest
+          version: v2.1.6
           args: --timeout=5m
+          verify: false
 
       - name: Run go fmt check
         run: |
@@ -193,10 +194,17 @@ jobs:
           go install github.com/securego/gosec/v2/cmd/gosec@v2.22.0
           gosec -fmt sarif -out gosec.sarif -severity medium ./...
 
-      - name: Run govulncheck
+      - name: Run govulncheck (fails on vulnerabilities)
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
-          govulncheck ./...
+          # govulncheck exits 0 even with vulns; use -show to include all
+          # and check for "Vulnerability" in output to fail the build
+          OUTPUT=$(govulncheck ./... 2>&1) || true
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -q "Vulnerability"; then
+            echo "::error::Vulnerabilities found! Please address them."
+            exit 1
+          fi
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master

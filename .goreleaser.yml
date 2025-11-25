@@ -80,8 +80,6 @@ release:
   name_template: "{{.ProjectName}} v{{.Version}}"
   prerelease: auto
   footer: |
-    ## 🔐 Supply Chain Security
-
     This release includes SLSA Build Provenance attestations for all artifacts:
 
     **View Attestations**: [GitHub Attestations Page](https://github.com/rafa-dot-el/mcp-shell/attestations)
@@ -98,8 +96,6 @@ release:
     ```
 
     Learn more about [SLSA Build Provenance](https://slsa.dev/spec/v1.0/provenance)
-
-
 
 
 # Docker images are built and published by separate container workflow
